@@ -13,11 +13,11 @@ var stage_1 = require("./stage");
 var staticImage_1 = require("./staticImage");
 var renderer = new three_1.WebGLRenderer();
 //renderer.setSize(window.innerWidth, window.innerHeight);//1:1 scale resolution
-if (window.innerWidth > window.innerHeight) {
-    renderer.setSize(window.innerHeight, window.innerHeight);
+if (window.innerWidth / 16 > window.innerHeight / 9) {
+    renderer.setSize(window.innerHeight * (16 / 9), window.innerHeight); //make constant
 }
 else {
-    renderer.setSize(window.innerWidth, window.innerWidth);
+    renderer.setSize(window.innerWidth, window.innerWidth * (9 / 16));
 }
 //document.getElementById("canvasContainer").append(renderer.domElement);
 document.body.getElementsByClassName('centered-canvas')[0].appendChild(renderer.domElement); //boardhouse uses a captured canvas element, difference?
@@ -46,10 +46,10 @@ window.addEventListener("resize", function (e) {
     //stageList[currentStage].camera.aspect = window.innerWidth / window.innerHeight;
     //stageList[currentStage].camera.updateProjectionMatrix();
     //renderer.setSize(window.innerWidth, window.innerHeight);
-    if (window.innerWidth > window.innerHeight) {
-        renderer.setSize(window.innerHeight, window.innerHeight);
+    if (window.innerWidth / 16 > window.innerHeight / 9) {
+        renderer.setSize(window.innerHeight * (16 / 9), window.innerHeight); //make constant
     }
     else {
-        renderer.setSize(window.innerWidth, window.innerWidth);
+        renderer.setSize(window.innerWidth, window.innerWidth * (9 / 16));
     }
 });

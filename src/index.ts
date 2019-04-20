@@ -13,11 +13,11 @@ import { StaticImage } from "./staticImage";
 
 var renderer:WebGLRenderer = new WebGLRenderer();
 //renderer.setSize(window.innerWidth, window.innerHeight);//1:1 scale resolution
-if(window.innerWidth > window.innerHeight) {
-    renderer.setSize(window.innerHeight, window.innerHeight);
+if(window.innerWidth / 16 > window.innerHeight / 9) {
+    renderer.setSize(window.innerHeight * (16/9), window.innerHeight);//make constant
 }
 else {
-    renderer.setSize(window.innerWidth, window.innerWidth);
+    renderer.setSize(window.innerWidth, window.innerWidth * (9/16));
 }
 
 //document.getElementById("canvasContainer").append(renderer.domElement);
@@ -59,10 +59,10 @@ window.addEventListener("resize", e => {
 
     //renderer.setSize(window.innerWidth, window.innerHeight);
 
-    if(window.innerWidth > window.innerHeight) {
-        renderer.setSize(window.innerHeight, window.innerHeight);
+    if(window.innerWidth / 16 > window.innerHeight / 9) {
+        renderer.setSize(window.innerHeight * (16/9), window.innerHeight);//make constant
     }
     else {
-        renderer.setSize(window.innerWidth, window.innerWidth);
+        renderer.setSize(window.innerWidth, window.innerWidth * (9/16));
     }
 });

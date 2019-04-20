@@ -31,6 +31,7 @@ var StaticImage = /** @class */ (function (_super) {
     StaticImage.prototype.render = function () {
     };
     StaticImage.prototype.update = function () {
+        //no need to update a static Image
     };
     return StaticImage;
 }(stage_1.Updateable));

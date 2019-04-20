@@ -22,6 +22,6 @@ export class StaticImage extends Updateable{
     }
 
     update() {
-
+        //no need to update a static Image
     }
 }
