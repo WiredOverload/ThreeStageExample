@@ -3,9 +3,6 @@
  * Notes:
  * Buttons and other interactable elements need more work in stage
  * individual stage update methods defined here?
- * look into fov / aspect ratio logic again
- *  get constant borders without stretching
- *  get borders to take up space, possibly get UI to stretch instead
  */
 exports.__esModule = true;
 var three_1 = require("three");
@@ -29,9 +26,6 @@ currentStage = "splash";
 stageList["splash"].UIElements.push(new staticImage_1.StaticImage(stageList["splash"].UIScene, 0, 0, "assets/BoundingBox.png"));
 stageList["splash"].update = function () {
 };
-//probably needed for later
-//var verticalBoundary:number = Math.tan((camera.fov / 2) * Math.PI/180) * camera.position.z;
-//var horizontalBoundary:number = Math.tan((Math.atan( Math.tan( camera.fov * Math.PI / 180 / 2 ) * camera.aspect ) * 180 / Math.PI) * Math.PI/180) * camera.position.z;//probably simplifyable
 var interval = setInterval(update, 1000 / 60); //60 ticks per second 
 function update() {
     stageList[currentStage].baseUpdate();
@@ -43,9 +37,6 @@ var animate = function () {
 };
 animate();
 window.addEventListener("resize", function (e) {
-    //stageList[currentStage].camera.aspect = window.innerWidth / window.innerHeight;
-    //stageList[currentStage].camera.updateProjectionMatrix();
-    //renderer.setSize(window.innerWidth, window.innerHeight);
     if (window.innerWidth / 16 > window.innerHeight / 9) {
         renderer.setSize(window.innerHeight * (16 / 9), window.innerHeight); //make constant
     }
