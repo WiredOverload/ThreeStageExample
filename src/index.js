@@ -50,7 +50,7 @@
 exports.__esModule = true;
 var three_1 = require("three");
 var stage_1 = require("./stage");
-var staticImage_1 = require("./staticImage");
+var player_1 = require("./player");
 var renderer = new three_1.WebGLRenderer();
 //renderer.setSize(window.innerWidth, window.innerHeight);//1:1 scale resolution
 if (window.innerWidth / 16 > window.innerHeight / 9) {
@@ -66,10 +66,13 @@ var currentStage = "main";
 stageList["main"] = new stage_1.Stage();
 stageList["splash"] = new stage_1.Stage();
 currentStage = "splash";
-stageList["splash"].UIElements.push(new staticImage_1.StaticImage(stageList["splash"].UIScene, 0, 0, "assets/BoundingBox.png"));
+// stageList["splash"].UIElements.push(new StaticImage(stageList["splash"].UIScene, 0, 0, "assets/BoundingBox.png"));
 stageList["splash"].update = function () {
+    stageList["splash"].gameElements.forEach(function (el) { el.update(); });
 };
-var interval = setInterval(update, 1000 / 60); //60 ticks per second 
+var player = new player_1.Player(stageList["splash"].gameScene);
+stageList["splash"].gameElements.push(player);
+var interval = setInterval(update, 1000 / 60); //60 ticks per second
 function update() {
     stageList[currentStage].baseUpdate();
     stageList[currentStage].update();
@@ -85,5 +88,14 @@ window.addEventListener("resize", function (e) {
     }
     else {
         renderer.setSize(window.innerWidth, window.innerWidth * (9 / 16));
+    }
+});
+/* movement controls for the player */
+window.addEventListener("keydown", function (e) {
+    if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
+        player.xVel = 10;
+    }
+    if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
+        player.xVel = -10;
     }
 });
