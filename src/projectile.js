@@ -18,11 +18,30 @@ var stage_1 = require("./stage");
 var THREE = require('three'); //only needed due to three type shenanigans
 var Projectile = /** @class */ (function (_super) {
     __extends(Projectile, _super);
-    function Projectile(scene, x, y, imageURL) {
+    function Projectile(scene, x, y, type) {
         var _this = _super.call(this) || this;
         _this.x = x;
         _this.y = y;
-        var spriteMap = new THREE.TextureLoader().load(imageURL); //"BoundingBox.png"
+        _this.type = type;
+        var spriteMap;
+        switch (type) {
+            case 0: { //basic bee
+                spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
+                break;
+            }
+            case 1: { //homing bee
+                spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
+                break;
+            }
+            case 2: { //exterminator gas puff
+                spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
+                break;
+            }
+            case 3: { //wasp? NYI
+                spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
+                break;
+            }
+        }
         var spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
         _this.sprite = new three_1.Sprite(spriteMaterial);
         scene.add(_this.sprite);
@@ -31,7 +50,15 @@ var Projectile = /** @class */ (function (_super) {
     Projectile.prototype.render = function () {
     };
     Projectile.prototype.update = function () {
-        //no need to update a static Image
+        this.x += this.xVelocity;
+        this.y += this.yVelocity;
+        if (this.type == 2) {
+            this.xVelocity -= this.xVelocity / 10;
+            this.yVelocity -= this.yVelocity / 10;
+        }
+        else if (this.type == 1) {
+            //add homing bee logic here
+        }
     };
     return Projectile;
 }(stage_1.Updateable));
