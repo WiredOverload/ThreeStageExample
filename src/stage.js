@@ -5,13 +5,13 @@
  */
 exports.__esModule = true;
 var three_1 = require("three");
-var Updateable = /** @class */ (function () {
+var Updateable = (function () {
     function Updateable() {
     }
     return Updateable;
 }());
 exports.Updateable = Updateable;
-var Stage = /** @class */ (function () {
+var Stage = (function () {
     function Stage() {
         this.gameScene = new three_1.Scene();
         this.UIScene = new three_1.Scene(); //orthographic vs perspective?

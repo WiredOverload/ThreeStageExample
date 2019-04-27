@@ -1,11 +1,8 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,7 +13,7 @@ exports.__esModule = true;
 var three_1 = require("three");
 var stage_1 = require("./stage");
 var THREE = require('three'); //only needed due to three type shenanigans
-var StaticImage = /** @class */ (function (_super) {
+var StaticImage = (function (_super) {
     __extends(StaticImage, _super);
     function StaticImage(scene, x, y, imageURL) {
         var _this = _super.call(this) || this;
