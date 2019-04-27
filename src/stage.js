@@ -25,7 +25,7 @@ var Stage = (function () {
         this.UICamera.position.set(0, 0, 25);
         this.UICamera.lookAt(0, 0, 0);
         this.UIElements = new Array();
-        this.gameElements = new Array();
+        this.gameElements = [];
     }
     Stage.prototype.render = function (renderer) {
         renderer.autoClear = true;

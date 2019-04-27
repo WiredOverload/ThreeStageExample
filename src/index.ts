@@ -77,9 +77,7 @@ stageList["splash"].update = function () {//actual splash screen update logic he
     stageList["splash"].gameElements.forEach(el => { el.update() });
 }
 
-var player = new Player(stageList["splash"].gameScene);
-
-stageList["splash"].gameElements.push(player);
+stageList["splash"].gameElements.push(new Player(stageList["splash"].gameScene));
 
 var interval = setInterval(update, 1000 / 60);//60 ticks per second
 
@@ -107,9 +105,19 @@ window.addEventListener("resize", e => {
 /* movement controls for the player */
 window.addEventListener("keydown", e => {
     if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-        player.xVel = 10;
+        stageList["splash"].gameElements[0].xVel = 0.1;
     }
     if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
-        player.xVel = -10;
+        stageList["splash"].gameElements[0].xVel = -0.1;
+    }
+});
+
+/* movement controls for the player */
+window.addEventListener("keyup", e => {
+    if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
+        stageList["splash"].gameElements[0].xVel = 0;
+    }
+    if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
+        stageList["splash"].gameElements[0].xVel = 0;
     }
 });

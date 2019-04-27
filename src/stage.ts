@@ -15,7 +15,7 @@ export class Stage {
     gameCamera:OrthographicCamera;
     UICamera:OrthographicCamera;
     UIElements:Array<Updateable>;//create custom UI element object?
-    gameElements:Array<Updateable>;//list of all objects that should be called in the update method
+    gameElements:any[];//list of all objects that should be called in the update method
     height:number;
     width:number;
 
@@ -34,7 +34,7 @@ export class Stage {
         this.UICamera.lookAt(0, 0, 0);
 
         this.UIElements = new Array<Updateable>();
-        this.gameElements = new Array<Updateable>();
+        this.gameElements = [];
     }
 
     render(renderer:WebGLRenderer) {

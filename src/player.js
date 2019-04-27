@@ -22,17 +22,18 @@ var Player = (function (_super) {
         _this.y = 0;
         _this.xVel = 0;
         _this.yVel = 0;
+        var spriteMap = new THREE.TextureLoader().load("assets/BoundingBox.png"); //"BoundingBox.png"
+        var spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+        _this.sprite = new three_1.Sprite(spriteMaterial);
+        _this.scene.add(_this.sprite);
         return _this;
     }
     Player.prototype.update = function () {
         this.x += this.xVel;
         this.y += this.yVel;
+        this.sprite.position.set(this.x, this.y, 0);
     };
     Player.prototype.render = function () {
-        var spriteMap = new THREE.TextureLoader().load("assets/BoundingBox.png"); //"BoundingBox.png"
-        var spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
-        this.sprite = new three_1.Sprite(spriteMaterial);
-        this.scene.add(this.sprite);
     };
     return Player;
 }(stage_1.Updateable));

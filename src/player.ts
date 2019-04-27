@@ -17,17 +17,20 @@ export class Player extends Updateable {
         this.y = 0;
         this.xVel = 0;
         this.yVel = 0;
+
+        var spriteMap: TextureLoader = new THREE.TextureLoader().load("assets/BoundingBox.png");//"BoundingBox.png"
+        var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+        this.sprite = new Sprite(spriteMaterial);
+        this.scene.add(this.sprite);
     }
 
     update(): void {
         this.x += this.xVel;
         this.y += this.yVel;
+        this.sprite.position.set(this.x, this.y, 0);
     }
 
     render(): void {
-        var spriteMap: TextureLoader = new THREE.TextureLoader().load("assets/BoundingBox.png");//"BoundingBox.png"
-        var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
-        this.sprite = new Sprite(spriteMaterial);
-        this.scene.add(this.sprite);
+        
     }
 }

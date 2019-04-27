@@ -70,8 +70,7 @@ currentStage = "splash";
 stageList["splash"].update = function () {
     stageList["splash"].gameElements.forEach(function (el) { el.update(); });
 };
-var player = new player_1.Player(stageList["splash"].gameScene);
-stageList["splash"].gameElements.push(player);
+stageList["splash"].gameElements.push(new player_1.Player(stageList["splash"].gameScene));
 var interval = setInterval(update, 1000 / 60); //60 ticks per second
 function update() {
     stageList[currentStage].baseUpdate();
@@ -93,9 +92,18 @@ window.addEventListener("resize", function (e) {
 /* movement controls for the player */
 window.addEventListener("keydown", function (e) {
     if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-        player.xVel = 10;
+        stageList["splash"].gameElements[0].xVel = 0.1;
     }
     if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
-        player.xVel = -10;
+        stageList["splash"].gameElements[0].xVel = -0.1;
+    }
+});
+/* movement controls for the player */
+window.addEventListener("keyup", function (e) {
+    if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
+        stageList["splash"].gameElements[0].xVel = 0;
+    }
+    if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
+        stageList["splash"].gameElements[0].xVel = 0;
     }
 });
