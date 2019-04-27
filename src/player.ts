@@ -1,4 +1,4 @@
-import { Sprite, TextureLoader, SpriteMaterial, Scene } from "three";
+import { Sprite, TextureLoader, SpriteMaterial, Scene, Texture } from "three";
 import { Updateable } from "./stage";
 var THREE = require('three');
 
@@ -18,8 +18,10 @@ export class Player extends Updateable {
         this.xVel = 0;
         this.yVel = 0;
 
-        var spriteMap: TextureLoader = new THREE.TextureLoader().load("assets/BoundingBox.png");//"BoundingBox.png"
+        var spriteMap: Texture = new THREE.TextureLoader().load("assets/beeman1.png");//"BoundingBox.png"
+        //spriteMap.anisotropy = 1000000;
         var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+        spriteMaterial.map.minFilter = THREE.LinearFilter;
         this.sprite = new Sprite(spriteMaterial);
         this.scene.add(this.sprite);
     }
