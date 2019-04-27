@@ -47,7 +47,7 @@
  * Feel free to add anything you want here and delete anything that's been completed
  */
 
-import { Scene, PerspectiveCamera, WebGLRenderer } from "three";
+import { Scene, PerspectiveCamera, WebGLRenderer, MinEquation } from "three";
 import { Stage } from "./stage";
 import { StaticImage } from "./staticImage";
 import { Player } from "./player";
@@ -104,20 +104,26 @@ window.addEventListener("resize", e => {
 
 /* movement controls for the player */
 window.addEventListener("keydown", e => {
+    const player = stageList["splash"].gameElements.find(el => el instanceof Player);
+    const maxVel = 0.05;
+
     if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-        stageList["splash"].gameElements[0].xVel = 0.1;
+        player.xVel = Math.min(player.xVel += 0.01, maxVel);
+        player.xVel *= 0.97;
     }
     if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
-        stageList["splash"].gameElements[0].xVel = -0.1;
+        player.xVel = Math.max(player.xVel -= 0.01, -maxVel);
+        player.xVel *= 0.97;
     }
 });
 
 /* movement controls for the player */
 window.addEventListener("keyup", e => {
+    const player = stageList["splash"].gameElements.find(el => el instanceof Player);
     if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-        stageList["splash"].gameElements[0].xVel = 0;
+        player.xVel = 0;
     }
     if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
-        stageList["splash"].gameElements[0].xVel = 0;
+        player.xVel = 0;
     }
 });
