@@ -48284,10 +48284,11 @@ var Player = /** @class */ (function (_super) {
         _this.xVel = 0;
         _this.yVel = 0;
         var spriteMap = new THREE.TextureLoader().load("assets/beeman1.png"); //"BoundingBox.png"
-        //spriteMap.anisotropy = 1000000;
+        spriteMap.anisotropy = 2;
         var spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
         spriteMaterial.map.minFilter = THREE.LinearFilter;
         _this.sprite = new three_1.Sprite(spriteMaterial);
+        _this.sprite.scale.set(45 / 81, 1, 1);
         _this.scene.add(_this.sprite);
         return _this;
     }
