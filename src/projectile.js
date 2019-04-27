@@ -1,8 +1,11 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -13,7 +16,7 @@ exports.__esModule = true;
 var three_1 = require("three");
 var stage_1 = require("./stage");
 var THREE = require('three'); //only needed due to three type shenanigans
-var Projectile = (function (_super) {
+var Projectile = /** @class */ (function (_super) {
     __extends(Projectile, _super);
     function Projectile(scene, x, y, type) {
         var _this = _super.call(this) || this;
@@ -22,19 +25,19 @@ var Projectile = (function (_super) {
         _this.type = type;
         var spriteMap;
         switch (type) {
-            case 0: {
+            case 0: { //basic bee
                 spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
                 break;
             }
-            case 1: {
+            case 1: { //homing bee
                 spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
                 break;
             }
-            case 2: {
+            case 2: { //exterminator gas puff
                 spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
                 break;
             }
-            case 3: {
+            case 3: { //wasp? NYI
                 spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
                 break;
             }
