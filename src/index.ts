@@ -47,7 +47,7 @@
  * Feel free to add anything you want here and delete anything that's been completed
  */
 
-import { Scene, PerspectiveCamera, WebGLRenderer, MinEquation } from "three";
+import { Scene, PerspectiveCamera, WebGLRenderer, MinEquation, Vector3 } from "three";
 import { Stage } from "./stage";
 import { StaticImage } from "./staticImage";
 import { Player } from "./player";
@@ -70,20 +70,45 @@ var currentStage: string = "main";
 stageList["main"] = new Stage();
 
 stageList["splash"] = new Stage();
-currentStage = "splash";
 
 
 //splash screen logic
-stageList["splash"].gameElements.push(new Player(stageList["splash"].gameScene));
-
 stageList["splash"].update = function () {//actual splash screen update logic here
     stageList["splash"].gameElements.forEach(el => { el.update() });
 }
 
 
 //game screen logic
+stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 0, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
+stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
+
+stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer));
+
 stageList["main"].update = function () {//actual splash screen update logic here
-    stageList["main"].gameElements.forEach(el => { el.update() });
+    var localStage = stageList["main"];
+    var localPlayer = localStage.gameElements.find(el => el instanceof Player);
+    localStage.gameElements.forEach(el => { el.update() });
+    localStage.gameCamera.position.set(localPlayer.x, localStage.gameCamera.position.y, localStage.gameCamera.position.z);
+
+    var isBackgroundLeft:boolean = false, isBackgroundRight: boolean = false;
+    localStage.BackgroundElements.forEach(element => {
+        if(element.x < localPlayer.x && element.x > localPlayer.x - 16)
+        {
+            isBackgroundLeft = true;
+        }
+        else if (element.x > localPlayer.x && element.x < localPlayer.x + 16) {
+            isBackgroundRight = true;
+        }
+        else {
+            localStage.BackgroundElements.splice(localStage.BackgroundElements.indexOf(element), 1);
+        }
+    });
+    if(!isBackgroundLeft) {
+        stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, (Math.round(localPlayer.x / 16) * 16) - 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
+    }
+    if(!isBackgroundRight) {
+        stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, (Math.round(localPlayer.x / 16) * 16) + 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
+    }
 }
 
 
@@ -112,29 +137,33 @@ window.addEventListener("resize", e => {
 
 /* movement controls for the player */
 window.addEventListener("keydown", e => {
-    const player = stageList["splash"].gameElements.find(el => el instanceof Player);
+    if(currentStage == "main") {
+        const player = stageList["main"].gameElements.find(el => el instanceof Player);
 
-    if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-        player.right = true;
-    }
-    if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
-        player.left = true;
-    }
-    if (e.keyCode === 32 /* space bar */ || e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
-        player.up = true;
+        if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
+            player.right = true;
+        }
+        if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
+            player.left = true;
+        }
+        if (e.keyCode === 32 /* space bar */ || e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
+            player.up = true;
+        }
     }
 });
 
 /* movement controls for the player */
 window.addEventListener("keyup", e => {
-    const player = stageList["splash"].gameElements.find(el => el instanceof Player);
-    if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-        player.right = false;
-    }
-    if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
-        player.left = false;
-    }
-    if (e.keyCode === 32 /* space bar */ || e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
-        player.up = false;
+    if(currentStage == "main") {
+        const player = stageList["main"].gameElements.find(el => el instanceof Player);
+        if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
+            player.right = false;
+        }
+        if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
+            player.left = false;
+        }
+        if (e.keyCode === 32 /* space bar */ || e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
+            player.up = false;
+        }
     }
 });

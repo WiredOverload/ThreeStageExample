@@ -1,4 +1,4 @@
-import { Sprite, Scene, TextureLoader, SpriteMaterial, Vector3} from "three";
+import { Sprite, Scene, TextureLoader, SpriteMaterial, Vector3, Texture, WebGLRenderer} from "three";
 import { Updateable } from "./stage";
 var THREE = require('three');//only needed due to three type shenanigans
 
@@ -11,10 +11,14 @@ export class StaticImage extends Updateable{
         super();//needed?
         this.x = x;
         this.y = y;
-        var spriteMap:TextureLoader = new THREE.TextureLoader().load(imageURL);//"BoundingBox.png"
+        var spriteMap:Texture = new THREE.TextureLoader().load(imageURL);
+        spriteMap.minFilter = THREE.NearestFilter;
+        spriteMap.magFilter = THREE.NearestFilter;
         var spriteMaterial:SpriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
+        //spriteMaterial.map.minFilter = THREE.LinearFilter;
         this.sprite = new Sprite( spriteMaterial );
-        this.sprite.scale = scale;//might need to use .set
+        this.sprite.scale.set(scale.x, scale.y, scale.z);
+        this.sprite.position.set(x, y, 0);
         scene.add(this.sprite);
     }
 
@@ -23,6 +27,6 @@ export class StaticImage extends Updateable{
     }
 
     update() {
-        //no need to update a static Image
+        this.sprite.position.set(this.x, this.y, 0);
     }
 }
