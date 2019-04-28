@@ -48,10 +48,10 @@ export class Stage {
 
     render(renderer:WebGLRenderer) {
         renderer.autoClear = true;
-        renderer.render( this.BackgroundScene, this.BackgroundCamera );
-        renderer.autoClear = false;
-        renderer.render( this.gameScene, this.gameCamera );
         renderer.render( this.UIScene, this.UICamera );
+        renderer.autoClear = false;
+        renderer.render( this.BackgroundScene, this.BackgroundCamera );
+        renderer.render( this.gameScene, this.gameCamera );
     }
 
     baseUpdate() {
