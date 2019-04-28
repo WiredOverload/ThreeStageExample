@@ -18,6 +18,7 @@ export class Player extends Updateable {
     isAlive: boolean;
     isInvuln: boolean;
     isShooting: boolean;
+    isLookingRight: boolean;
     maxAnisotrophy: number;
     beemanIdleState: Texture;
     beemanIdleStateHurt1: Texture;
@@ -42,6 +43,7 @@ export class Player extends Updateable {
         this.isAlive = true;
         this.isInvuln = false;
         this.isShooting = false;
+        this.isLookingRight = true;
         this.maxAnisotrophy = maxAnisotrophy;
         this.beemanIdleState = new THREE.TextureLoader().load("assets/beeman_idle1.png")
         this.beemanIdleStateHurt1 = new THREE.TextureLoader().load("assets/beeman_idle2.png")
@@ -95,8 +97,16 @@ export class Player extends Updateable {
             this.isAlive = false;
         }
 
+        if(this.xVel >= 0 && !this.isLookingRight) {
+            this.isLookingRight = true;
+        }
+        else if(this.xVel < 0 && this.isLookingRight) {
+            this.isLookingRight = false;
+        }
+
+        var spriteMap: Texture;
         if (this.isShooting) {
-            var spriteMap: Texture = this.beemanShootingState;
+            spriteMap = this.beemanShootingState;
             this.sprite.scale.set(45 / 81, 1, 1);
 
             if (this.health < 75) {
@@ -112,7 +122,7 @@ export class Player extends Updateable {
             spriteMaterial.map.minFilter = THREE.LinearFilter;
             this.sprite.material = spriteMaterial;
         } else {
-            var spriteMap: Texture = this.beemanIdleState;
+            spriteMap = this.beemanIdleState;
             this.sprite.scale.set(31/81, 1, 1);
 
             if (this.health < 75) {
@@ -127,6 +137,23 @@ export class Player extends Updateable {
             spriteMaterial.map.minFilter = THREE.LinearFilter;
             this.sprite.material = spriteMaterial;
         }
+
+        if(this.isLookingRight) {
+            spriteMap.repeat.set(1, 1);
+            spriteMap.offset.set( 0, 0);
+            spriteMap.anisotropy = this.maxAnisotrophy;
+            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+            spriteMaterial.map.minFilter = THREE.LinearFilter;
+            this.sprite.material = spriteMaterial;
+        }
+        else if(!this.isLookingRight) {
+            spriteMap.repeat.set(-1, 1);
+            spriteMap.offset.set( 1, 0);
+            spriteMap.anisotropy = this.maxAnisotrophy;
+            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+            spriteMaterial.map.minFilter = THREE.LinearFilter;
+            this.sprite.material = spriteMaterial;
+        }
     }
 
     takeHit(): void {
@@ -135,6 +162,6 @@ export class Player extends Updateable {
     }
 
     render(): void {
-
+        
     }
 }
