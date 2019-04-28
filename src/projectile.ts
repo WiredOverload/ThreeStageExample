@@ -1,27 +1,28 @@
-import { Sprite, Scene, TextureLoader, SpriteMaterial} from "three";
+import { Sprite, Scene, TextureLoader, SpriteMaterial } from "three";
 import { Updateable } from "./stage";
 var THREE = require('three');//only needed due to three type shenanigans
 
-export class Projectile extends Updateable{
-    sprite:Sprite;
-    x:number;
-    y:number;
-    xVelocity:number;
-    yVelocity:number;
-    type:number;
-    lifetimeTicks:number;
-    totalTicks:number;
+export class Projectile extends Updateable {
+    sprite: Sprite;
+    x: number;
+    y: number;
+    xVelocity: number;
+    yVelocity: number;
+    type: number;
+    lifetimeTicks: number;
+    totalTicks: number;
+    isAlive: boolean;
 
-    constructor(scene:Scene, x:number, y:number, type:number) {
+    constructor(scene: Scene, x: number, y: number, type: number) {
         super();//needed?
         this.x = x;
         this.y = y;
         this.type = type;
         this.totalTicks = 0;
+        this.isAlive = true; 
 
-        var spriteMap:TextureLoader;
-        switch(type)
-        {
+        var spriteMap: TextureLoader;
+        switch (type) {
             case 0: {//basic bee
                 spriteMap = new THREE.TextureLoader().load("bee1.png");
                 this.lifetimeTicks = 60 * 10;//10 seconds
@@ -42,8 +43,8 @@ export class Projectile extends Updateable{
                 break;
             }
         }
-        var spriteMaterial:SpriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
-        this.sprite = new Sprite( spriteMaterial );
+        var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+        this.sprite = new Sprite(spriteMaterial);
         scene.add(this.sprite);
     }
 
@@ -55,12 +56,11 @@ export class Projectile extends Updateable{
         this.totalTicks++;
         this.x += this.xVelocity;
         this.y += this.yVelocity;
-        if(this.type == 2)
-        {
+        if (this.type == 2) {
             this.xVelocity -= this.xVelocity / 10;
             this.yVelocity -= this.yVelocity / 10;
         }
-        else if(this.type == 1) {
+        else if (this.type == 1) {
             //add homing bee logic here
         }
     }

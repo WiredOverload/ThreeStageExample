@@ -48127,6 +48127,81 @@ function LensFlare() {
 
 /***/ }),
 
+/***/ "./src/enemy.js":
+/*!**********************!*\
+  !*** ./src/enemy.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+exports.__esModule = true;
+var three_1 = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+var stage_1 = __webpack_require__(/*! ./stage */ "./src/stage.js");
+var THREE = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+var Enemy = /** @class */ (function (_super) {
+    __extends(Enemy, _super);
+    function Enemy(scene, type) {
+        var _this = _super.call(this) || this;
+        _this.scene = scene;
+        _this.x = 0;
+        _this.y = 0;
+        _this.xVel = 0;
+        _this.yVel = 0;
+        _this.health = 100;
+        _this.isAlive = true;
+        var spriteMap;
+        switch (type) {
+            case 0: { //wasp
+                _this.health = 50;
+                spriteMap = new THREE.TextureLoader().load("assets/wasp1.png");
+            }
+            case 1: { //exterminator
+                _this.health = 100;
+                spriteMap = new THREE.TextureLoader().load("assets/exterminator.png");
+            }
+            case 2: { //NPCs?
+            }
+        }
+        spriteMap.anisotropy = 2;
+        var spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+        spriteMaterial.map.minFilter = THREE.LinearFilter;
+        _this.sprite = new three_1.Sprite(spriteMaterial);
+        _this.sprite.scale.set(45 / 81, 1, 1);
+        _this.scene.add(_this.sprite);
+        return _this;
+    }
+    Enemy.prototype.update = function () {
+        this.x += this.xVel;
+        this.y += this.yVel;
+        this.sprite.position.set(this.x, this.y, 0);
+        if (this.health <= 0) {
+            this.isAlive = false;
+        }
+    };
+    Enemy.prototype.render = function () {
+    };
+    return Enemy;
+}(stage_1.Updateable));
+exports.Enemy = Enemy;
+
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
@@ -48189,6 +48264,8 @@ var three_1 = __webpack_require__(/*! three */ "./node_modules/three/build/three
 var stage_1 = __webpack_require__(/*! ./stage */ "./src/stage.js");
 var staticImage_1 = __webpack_require__(/*! ./staticImage */ "./src/staticImage.js");
 var player_1 = __webpack_require__(/*! ./player */ "./src/player.js");
+var projectile_1 = __webpack_require__(/*! ./projectile */ "./src/projectile.js");
+var enemy_1 = __webpack_require__(/*! ./enemy */ "./src/enemy.js");
 var renderer = new three_1.WebGLRenderer();
 //renderer.setSize(window.innerWidth, window.innerHeight);//1:1 scale resolution
 if (window.innerWidth / 16 > window.innerHeight / 9) {
@@ -48239,6 +48316,33 @@ var interval = setInterval(update, 1000 / 60); //60 ticks per second
 function update() {
     stageList[currentStage].baseUpdate();
     stageList[currentStage].update();
+    stageList["main"].gameElements.filter(function (el) { return el.isAlive; }); // filter out dead enemies / player
+    stageList["main"].gameElements.forEach(function (el) {
+        stageList["main"].gameElements.forEach(function (el2) {
+            if (el !== el2) { // only check for collision between two different objects
+                if (collision(el, el2)) {
+                    // if player collides with an enemy projectile, take damage   
+                    if (el instanceof player_1.Player && el2 instanceof projectile_1.Projectile && el2.type in [2, 3]) {
+                        el.health -= 10;
+                        el2.isAlive = false;
+                    }
+                    // if enemy collides with enemy projectile, enemy takes damage
+                    if (el instanceof enemy_1.Enemy && el2 instanceof projectile_1.Projectile && el2.type in [0, 1]) {
+                        el.health -= 10;
+                        el2.isAlive = false;
+                    }
+                    // if player collides with enemy, give player period of invuln and push back
+                }
+            }
+        });
+    });
+}
+// check if two items are colliding
+function collision(a, b) {
+    return !(((a.y + a.sprite.scale.y) < (b.y)) ||
+        (a.y > (b.y + b.sprite.scale.y)) ||
+        ((a.x + a.sprite.scale.x) < b.x) ||
+        (a.x > (b.x + b.sprite.scale.x)));
 }
 var animate = function () {
     requestAnimationFrame(animate);
@@ -48328,6 +48432,7 @@ var Player = /** @class */ (function (_super) {
         _this.isJumping = false;
         _this.maxVel = 0.05;
         _this.health = 100;
+        _this.isAlive = true;
         var spriteMap = new THREE.TextureLoader().load("assets/beeman1.png"); //"BoundingBox.png"
         spriteMap.anisotropy = renderer.getMaxAnisotropy();
         var spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
@@ -48359,12 +48464,98 @@ var Player = /** @class */ (function (_super) {
             this.yVel = 0;
         }
         this.sprite.position.set(this.x, this.y, 0);
+        if (this.health <= 0) {
+            this.isAlive = false;
+        }
     };
     Player.prototype.render = function () {
     };
     return Player;
 }(stage_1.Updateable));
 exports.Player = Player;
+
+
+/***/ }),
+
+/***/ "./src/projectile.js":
+/*!***************************!*\
+  !*** ./src/projectile.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+exports.__esModule = true;
+var three_1 = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+var stage_1 = __webpack_require__(/*! ./stage */ "./src/stage.js");
+var THREE = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js"); //only needed due to three type shenanigans
+var Projectile = /** @class */ (function (_super) {
+    __extends(Projectile, _super);
+    function Projectile(scene, x, y, type) {
+        var _this = _super.call(this) || this;
+        _this.x = x;
+        _this.y = y;
+        _this.type = type;
+        _this.totalTicks = 0;
+        _this.isAlive = true;
+        var spriteMap;
+        switch (type) {
+            case 0: { //basic bee
+                spriteMap = new THREE.TextureLoader().load("bee1.png");
+                _this.lifetimeTicks = 60 * 10; //10 seconds
+                break;
+            }
+            case 1: { //homing bee
+                spriteMap = new THREE.TextureLoader().load("bee1.png");
+                _this.lifetimeTicks = 60 * 10; //10 seconds
+                break;
+            }
+            case 2: { //exterminator gas puff
+                spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
+                _this.lifetimeTicks = 60 * 3; //3 seconds
+                break;
+            }
+            case 3: { //wasp? NYI
+                spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
+                break;
+            }
+        }
+        var spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+        _this.sprite = new three_1.Sprite(spriteMaterial);
+        scene.add(_this.sprite);
+        return _this;
+    }
+    Projectile.prototype.render = function () {
+    };
+    Projectile.prototype.update = function () {
+        this.totalTicks++;
+        this.x += this.xVelocity;
+        this.y += this.yVelocity;
+        if (this.type == 2) {
+            this.xVelocity -= this.xVelocity / 10;
+            this.yVelocity -= this.yVelocity / 10;
+        }
+        else if (this.type == 1) {
+            //add homing bee logic here
+        }
+    };
+    return Projectile;
+}(stage_1.Updateable));
+exports.Projectile = Projectile;
 
 
 /***/ }),
