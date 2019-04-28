@@ -31,7 +31,7 @@ export class Player extends Updateable {
     constructor(scene: Scene, maxAnisotrophy: number) {
         super();
         this.scene = scene;
-        this.x = 0;
+        this.x = 0.075;
         this.y = 0;
         this.xVel = 0;
         this.yVel = 0;
@@ -97,9 +97,10 @@ export class Player extends Updateable {
         this.xVel *= 0.9;
         this.yVel *= 0.9;
 
-        if (this.y < 0) {
+        //floor logic
+        if (this.y < 0.075) {
             this.isJumping = false;
-            this.y = 0
+            this.y = 0.075
             this.yVel = 0;
         }
 
@@ -123,10 +124,10 @@ export class Player extends Updateable {
 
             if (this.health < 50) {
                 spriteMap = this.beemanShootingStateHurt2;
-                this.sprite.scale.set(50 / 54, 1, 1);
+                this.sprite.scale.set((50 / 54) * (4/5), 54/81, 1);
             } else if (this.health < 75) {
                 spriteMap = this.beemanShootingStateHurt1;
-                this.sprite.scale.set(44 / 73, 1, 1);
+                this.sprite.scale.set(44 / 73, 73/81, 1);
             }
 
             spriteMap.anisotropy = this.maxAnisotrophy;
@@ -139,11 +140,11 @@ export class Player extends Updateable {
 
             if (this.health < 50) {
                 spriteMap = this.beemanIdleStateHurt2;
-                this.sprite.scale.set(35 / 54, 1, 1);
+                this.sprite.scale.set((35 / 54) * (4/5), 54/81, 1);
                 
             } else if (this.health < 75) {
                 spriteMap = this.beemanIdleStateHurt1;
-                this.sprite.scale.set(27 / 73, 1, 1);
+                this.sprite.scale.set(27 / 73, 73/81, 1);
             }
             spriteMap.anisotropy = this.maxAnisotrophy;
             var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000 : 0xffffff });

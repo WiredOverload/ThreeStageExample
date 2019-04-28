@@ -47,6 +47,7 @@ import { StaticImage } from "./staticImage";
 import { Player } from "./player";
 import { Projectile } from "./projectile";
 import { Enemy } from "./enemy";
+import { Platform } from "./platform";
 
 var renderer: WebGLRenderer = new WebGLRenderer();
 //renderer.setSize(window.innerWidth, window.innerHeight);//1:1 scale resolution
@@ -85,7 +86,7 @@ stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, 1,
 stageList["main"].update = function () {//actual splash screen update logic here
     var localStage: Stage = stageList["main"];
     localStage.gameElements.forEach(el => {
-        if (!el.isAlive) {
+        if (el.isAlive != undefined && !el.isAlive) {
             localStage.gameScene.remove(el.sprite);
         }
     });
@@ -141,9 +142,13 @@ stageList["main"].update = function () {//actual splash screen update logic here
     });
 }
 
+//platforms
+stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 0, 4.5));
+stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 2));
+stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 4));
 
+//main update
 var interval = setInterval(update, 1000 / 60);//60 ticks per second
-
 function update() {
     stageList[currentStage].baseUpdate();
     stageList[currentStage].update();
