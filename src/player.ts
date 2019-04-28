@@ -46,11 +46,11 @@ export class Player extends Updateable {
         if (this.left) {
             this.xVel = Math.max(this.xVel -= 0.01, -this.maxVel);
         }
-        if (this.up && !this.isJumping) {
-            this.yVel += 0.2;
+        if (this.up) {
+            this.yVel += this.isJumping ? 0.009 : 0.3;
             this.isJumping = true;
         }
-        this.yVel -= 0.005;
+        this.yVel -= 0.01;
         this.x += this.xVel;
         this.y += this.yVel;
         this.xVel *= 0.9;
