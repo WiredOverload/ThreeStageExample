@@ -58,9 +58,9 @@ export class Stage {
         this.gameElements.forEach(element => {
             element.update();
         });
-        this.UIElements.forEach(element => {
-            element.update();
-        });
+        //this.UIElements.forEach(element => {
+        //    element.update();
+        //});
         this.BackgroundCamera.position.set(this.gameCamera.position.x, this.gameCamera.position.y, this.gameCamera.position.z);
     }
 

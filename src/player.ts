@@ -107,7 +107,7 @@ export class Player extends Updateable {
             spriteMap.anisotropy = this.maxAnisotrophy;
             var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
             spriteMaterial.map.minFilter = THREE.LinearFilter;
-            this.sprite = new Sprite(spriteMaterial);
+            this.sprite.material = spriteMaterial;
         }
     }
 

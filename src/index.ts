@@ -135,7 +135,7 @@ var interval = setInterval(update, 1000 / 60);//60 ticks per second
 function update() {
     stageList[currentStage].baseUpdate();
     stageList[currentStage].update();
-    stageList["main"].gameElements.filter(el => el.isAlive); // filter out dead enemies / player
+    //stageList["main"].gameElements.filter(el => el.isAlive); // filter out dead enemies / player
 }
 
 // check if two items are colliding
