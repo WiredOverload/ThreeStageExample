@@ -27,6 +27,7 @@ export class Player extends Updateable {
     beemanShootingStateHurt1: Texture;
     beemanShootingStateHurt2: Texture;
     invulnTicks: number;
+    queenCount: number; // keeps track of number of queens we pick up
 
     constructor(scene: Scene, maxAnisotrophy: number) {
         super();
@@ -53,6 +54,7 @@ export class Player extends Updateable {
         this.beemanShootingStateHurt1 = new THREE.TextureLoader().load("assets/beeman2.png");
         this.beemanShootingStateHurt2 = new THREE.TextureLoader().load("assets/beeman3.png");
         this.invulnTicks = 0;
+        this.queenCount = 0;
 
         var spriteMap: Texture = this.beemanIdleState;
 
@@ -107,6 +109,8 @@ export class Player extends Updateable {
 
         if (this.health <= 0) {
             this.isAlive = false;
+        } else {
+            this.isAlive = true;
         }
 
         if(this.xVel >= 0 && !this.isLookingRight) {
@@ -130,7 +134,7 @@ export class Player extends Updateable {
             }
 
             spriteMap.anisotropy = this.maxAnisotrophy;
-            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000 : 0xffffff });
+            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, opacity: this.isAlive ? 1: 0, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000 : 0xffffff });
             spriteMaterial.map.minFilter = THREE.LinearFilter;
             this.sprite.material = spriteMaterial;
         } else {
@@ -146,7 +150,7 @@ export class Player extends Updateable {
                 this.sprite.scale.set(27 / 73, 1, 1);
             }
             spriteMap.anisotropy = this.maxAnisotrophy;
-            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000 : 0xffffff });
+            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, opacity: this.isAlive ? 1: 0, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000 : 0xffffff });
             spriteMaterial.map.minFilter = THREE.LinearFilter;
             this.sprite.material = spriteMaterial;
         }
@@ -155,7 +159,7 @@ export class Player extends Updateable {
             spriteMap.repeat.set(1, 1);
             spriteMap.offset.set( 0, 0);
             spriteMap.anisotropy = this.maxAnisotrophy;
-            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000: 0xffffff });
+            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, opacity: this.isAlive ? 1: 0, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000: 0xffffff });
             spriteMaterial.map.minFilter = THREE.LinearFilter;
             this.sprite.material = spriteMaterial;
         }
@@ -163,7 +167,7 @@ export class Player extends Updateable {
             spriteMap.repeat.set(-1, 1);
             spriteMap.offset.set( 1, 0);
             spriteMap.anisotropy = this.maxAnisotrophy;
-            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000: 0xffffff });
+            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, opacity: this.isAlive ? 1: 0, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000: 0xffffff });
             spriteMaterial.map.minFilter = THREE.LinearFilter;
             this.sprite.material = spriteMaterial;
         }

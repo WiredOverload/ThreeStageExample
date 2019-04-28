@@ -22,7 +22,10 @@ export class Projectile extends Updateable {
         this.isAlive = true; 
         this.xVelocity = xVel;
         this.yVelocity = yVel;
-        
+        var scaleX = 1/8;
+        var scaleY = 1/8;
+        var scaleZ = 1;
+
         var spriteMap: Texture;
         switch (type) {
             case 0: {//basic bee
@@ -44,12 +47,19 @@ export class Projectile extends Updateable {
                 spriteMap = new THREE.TextureLoader().load("assets/BoundingBox.png");
                 break;
             }
+            case 4: { //queen bee
+                spriteMap = new THREE.TextureLoader().load("assets/queenbee.png");
+                var scaleX = 45/50;
+                var scaleY = 1;
+                var scaleZ = 1;
+                break;
+            }
         }
         spriteMap.minFilter = THREE.NearestFilter;
         spriteMap.magFilter = THREE.NearestFilter;
         var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
         this.sprite = new Sprite(spriteMaterial);
-        this.sprite.scale.set(1/8, 1/8, 1);//guesstemates
+        this.sprite.scale.set(scaleX, scaleY, scaleZ);//guesstemates
         scene.add(this.sprite);
     }
 
@@ -73,7 +83,7 @@ export class Projectile extends Updateable {
         else if (this.type == 1) {
             //add homing bee logic here
         }
-        
+
         this.sprite.position.set(this.x, this.y, 0);
     }
 }
