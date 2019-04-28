@@ -84,7 +84,7 @@ stageList["splash"].update = function () {//actual splash screen update logic he
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 0, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 
-stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer));
+stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer.getMaxAnisotropy()));
 
 stageList["main"].update = function () {//actual splash screen update logic here
     var localStage = stageList["main"];
@@ -92,10 +92,9 @@ stageList["main"].update = function () {//actual splash screen update logic here
     localStage.gameElements.forEach(el => { el.update() });
     localStage.gameCamera.position.set(localPlayer.x, localStage.gameCamera.position.y, localStage.gameCamera.position.z);
 
-    var isBackgroundLeft:boolean = false, isBackgroundRight: boolean = false;
+    var isBackgroundLeft: boolean = false, isBackgroundRight: boolean = false;
     localStage.BackgroundElements.forEach(element => {
-        if(element.x < localPlayer.x && element.x > localPlayer.x - 16)
-        {
+        if (element.x < localPlayer.x && element.x > localPlayer.x - 16) {
             isBackgroundLeft = true;
         }
         else if (element.x > localPlayer.x && element.x < localPlayer.x + 16) {
@@ -105,12 +104,34 @@ stageList["main"].update = function () {//actual splash screen update logic here
             localStage.BackgroundElements.splice(localStage.BackgroundElements.indexOf(element), 1);
         }
     });
-    if(!isBackgroundLeft) {
+    if (!isBackgroundLeft) {
         stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, (Math.round(localPlayer.x / 16) * 16) - 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
     }
-    if(!isBackgroundRight) {
+    if (!isBackgroundRight) {
         stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, (Math.round(localPlayer.x / 16) * 16) + 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
     }
+    stageList["main"].gameElements.forEach(el => {
+        stageList["main"].gameElements.forEach(el2 => {
+            if (el !== el2) { // only check for collision between two different objects
+                if (collision(el, el2)) {
+                    // if player collides with an enemy projectile, take damage   
+                    if (el instanceof Player && el2 instanceof Projectile && el2.type in [2, 3]) {
+                        el.takeHit();
+                        el2.isAlive = false;
+                    }
+                    // if enemy collides with enemy projectile, enemy takes damage
+                    if (el instanceof Enemy && el2 instanceof Projectile && el2.type in [0, 1]) {
+                        el.health -= 10;
+                        el2.isAlive = false;
+                    }
+                    // if player collides with enemy, give player period of invuln and push back
+                    if (el instanceof Player && el2 instanceof Enemy) {
+                        el.takeHit();
+                    }
+                }
+            }
+        });
+    });
 }
 
 
@@ -120,26 +141,6 @@ function update() {
     stageList[currentStage].baseUpdate();
     stageList[currentStage].update();
     stageList["main"].gameElements.filter(el => el.isAlive); // filter out dead enemies / player
-
-    stageList["main"].gameElements.forEach(el => {
-        stageList["main"].gameElements.forEach(el2 => {
-            if (el !== el2) { // only check for collision between two different objects
-                if (collision(el, el2)) {
-                    // if player collides with an enemy projectile, take damage   
-                    if (el instanceof Player && el2 instanceof Projectile && el2.type in [2,3]) {
-                        el.health -= 10;
-                        el2.isAlive = false;
-                    }
-                    // if enemy collides with enemy projectile, enemy takes damage
-                    if (el instanceof Enemy && el2 instanceof Projectile && el2.type in [0,1]) {
-                        el.health -= 10;
-                        el2.isAlive = false;
-                    }
-                    // if player collides with enemy, give player period of invuln and push back
-              }
-            }
-        });
-    });
 }
 
 // check if two items are colliding
@@ -170,8 +171,8 @@ window.addEventListener("resize", e => {
 
 /* movement controls for the player */
 window.addEventListener("keydown", e => {
-    if(currentStage == "main") {
-        const player = stageList["main"].gameElements.find(el => el instanceof Player);
+    if (currentStage == "main") {
+        const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
 
         if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
             player.right = true;
@@ -179,15 +180,31 @@ window.addEventListener("keydown", e => {
         if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
             player.left = true;
         }
-        if (e.keyCode === 32 /* space bar */ || e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
+        if (e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
             player.up = true;
+        }
+        if (e.keyCode === 32 /* space bar */) {
+            // shoot projectiles
+            if (!player.isShooting) {
+                stageList["main"].gameElements.push(
+                    new Projectile(
+                        stageList["main"].gameScene, 
+                        player.x, 
+                        player.y, 
+                        player.xVel > 0 ? 0.01 : -0.01,
+                        player.yVel > 0 ? 0.01 : -0.01, 
+                        0
+                    )
+                );
+            }
+            player.isShooting = true;
         }
     }
 });
 
 /* movement controls for the player */
 window.addEventListener("keyup", e => {
-    if(currentStage == "main") {
+    if (currentStage == "main") {
         const player = stageList["main"].gameElements.find(el => el instanceof Player);
         if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
             player.right = false;
@@ -196,7 +213,7 @@ window.addEventListener("keyup", e => {
             player.left = false;
         }
         if (e.keyCode === 32 /* space bar */ || e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
-            player.up = false;
+            player.isShooting = false;
         }
     }
 });

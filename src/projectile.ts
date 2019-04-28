@@ -13,14 +13,16 @@ export class Projectile extends Updateable {
     totalTicks: number;
     isAlive: boolean;
 
-    constructor(scene: Scene, x: number, y: number, type: number) {
+    constructor(scene: Scene, x: number, y: number, xVel: number, yVel: number, type: number) {
         super();//needed?
         this.x = x;
         this.y = y;
         this.type = type;
         this.totalTicks = 0;
         this.isAlive = true; 
-
+        this.xVelocity = xVel;
+        this.yVelocity = yVel;
+        
         var spriteMap: TextureLoader;
         switch (type) {
             case 0: {//basic bee
