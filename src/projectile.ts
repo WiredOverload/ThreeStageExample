@@ -20,11 +20,11 @@ export class Projectile extends Updateable{
         switch(type)
         {
             case 0: {//basic bee
-                spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
+                spriteMap = new THREE.TextureLoader().load("bee1.png");
                 break;
             }
             case 1: {//homing bee
-                spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
+                spriteMap = new THREE.TextureLoader().load("bee1.png");
                 break;
             }
             case 2: {//exterminator gas puff
