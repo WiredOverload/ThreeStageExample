@@ -9,26 +9,32 @@ export class Projectile extends Updateable{
     xVelocity:number;
     yVelocity:number;
     type:number;
+    lifetimeTicks:number;
+    totalTicks:number;
 
     constructor(scene:Scene, x:number, y:number, type:number) {
         super();//needed?
         this.x = x;
         this.y = y;
         this.type = type;
+        this.totalTicks = 0;
 
         var spriteMap:TextureLoader;
         switch(type)
         {
             case 0: {//basic bee
                 spriteMap = new THREE.TextureLoader().load("bee1.png");
+                this.lifetimeTicks = 60 * 10;//10 seconds
                 break;
             }
             case 1: {//homing bee
                 spriteMap = new THREE.TextureLoader().load("bee1.png");
+                this.lifetimeTicks = 60 * 10;//10 seconds
                 break;
             }
             case 2: {//exterminator gas puff
                 spriteMap = new THREE.TextureLoader().load("BoundingBox.png");
+                this.lifetimeTicks = 60 * 3;//3 seconds
                 break;
             }
             case 3: {//wasp? NYI
@@ -46,6 +52,7 @@ export class Projectile extends Updateable{
     }
 
     update() {
+        this.totalTicks++;
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         if(this.type == 2)
