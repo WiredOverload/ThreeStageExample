@@ -15,6 +15,8 @@ export class Stage {
     gameCamera:OrthographicCamera;
     UICamera:OrthographicCamera;
     UIElements:Array<Updateable>;//create custom UI element object?
+    BackgroundCamera:OrthographicCamera;
+    BackgroundElements:Array<Updateable>;//create custom UI element object?
     gameElements:any[];//list of all objects that should be called in the update method
     height:number;
     width:number;
@@ -33,7 +35,12 @@ export class Stage {
         this.UICamera.position.set(0, 0, 25);
         this.UICamera.lookAt(0, 0, 0);
 
+        this.BackgroundCamera = new OrthographicCamera(this.width/-2, this.width/2, this.height/2, this.height/-2, -1000, 1000);//make sure this is always the same as the gameCamera
+        this.BackgroundCamera.position.set(0, 0, 25);
+        this.BackgroundCamera.lookAt(0, 0, 0);
+
         this.UIElements = new Array<Updateable>();
+        this.BackgroundElements = new Array<Updateable>();
         this.gameElements = [];
     }
 
@@ -51,6 +58,7 @@ export class Stage {
         this.UIElements.forEach(element => {
             element.update();
         });
+        this.BackgroundCamera.position = this.gameCamera.position;
     }
 
     update() {
