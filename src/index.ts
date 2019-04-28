@@ -51,6 +51,8 @@ import { Scene, PerspectiveCamera, WebGLRenderer, MinEquation } from "three";
 import { Stage } from "./stage";
 import { StaticImage } from "./staticImage";
 import { Player } from "./player";
+import { Projectile } from "./projectile";
+import { Enemy } from "./enemy";
 
 var renderer: WebGLRenderer = new WebGLRenderer();
 //renderer.setSize(window.innerWidth, window.innerHeight);//1:1 scale resolution
@@ -92,6 +94,37 @@ var interval = setInterval(update, 1000 / 60);//60 ticks per second
 function update() {
     stageList[currentStage].baseUpdate();
     stageList[currentStage].update();
+    stageList["main"].gameElements.filter(el => el.isAlive); // filter out dead enemies / player
+
+    stageList["main"].gameElements.forEach(el => {
+        stageList["main"].gameElements.forEach(el2 => {
+            if (el !== el2) { // only check for collision between two different objects
+                if (collision(el, el2)) {
+                    // if player collides with an enemy projectile, take damage   
+                    if (el instanceof Player && el2 instanceof Projectile && el2.type in [2,3]) {
+                        el.health -= 10;
+                        el2.isAlive = false;
+                    }
+                    // if enemy collides with enemy projectile, enemy takes damage
+                    if (el instanceof Enemy && el2 instanceof Projectile && el2.type in [0,1]) {
+                        el.health -= 10;
+                        el2.isAlive = false;
+                    }
+                    // if player collides with enemy, give player period of invuln and push back
+              }
+            }
+        });
+    });
+}
+
+// check if two items are colliding
+function collision(a, b) {
+    return !(
+        ((a.y + a.sprite.scale.y) < (b.y)) ||
+        (a.y > (b.y + b.sprite.scale.y)) ||
+        ((a.x + a.sprite.scale.x) < b.x) ||
+        (a.x > (b.x + b.sprite.scale.x))
+    );
 }
 
 var animate = function () {

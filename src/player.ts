@@ -14,7 +14,8 @@ export class Player extends Updateable {
     right: boolean;
     isJumping: boolean;
     maxVel: number;
-    health:number;
+    health: number;
+    isAlive: boolean;
 
     constructor(scene: Scene) {
         super();
@@ -29,13 +30,14 @@ export class Player extends Updateable {
         this.isJumping = false;
         this.maxVel = 0.05;
         this.health = 100;
+        this.isAlive = true;
 
         var spriteMap: Texture = new THREE.TextureLoader().load("assets/beeman1.png");//"BoundingBox.png"
         spriteMap.anisotropy = 2;
         var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
         spriteMaterial.map.minFilter = THREE.LinearFilter;
         this.sprite = new Sprite(spriteMaterial);
-        this.sprite.scale.set(45/81, 1, 1);
+        this.sprite.scale.set(45 / 81, 1, 1);
         this.scene.add(this.sprite);
     }
 
@@ -63,9 +65,13 @@ export class Player extends Updateable {
         }
 
         this.sprite.position.set(this.x, this.y, 0);
+        
+        if (this.health <= 0) {
+            this.isAlive = false;
+        }
     }
 
     render(): void {
-        
+
     }
 }

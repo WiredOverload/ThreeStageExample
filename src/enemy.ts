@@ -10,6 +10,7 @@ export class Enemy extends Updateable {
     yVel: number;
     sprite: Sprite;
     health:number;
+    isAlive: boolean;
 
     constructor(scene: Scene, type: number) {
         super();
@@ -19,6 +20,7 @@ export class Enemy extends Updateable {
         this.xVel = 0;
         this.yVel = 0;
         this.health = 100;
+        this.isAlive = true;
 
         var spriteMap: Texture;
 
@@ -49,6 +51,10 @@ export class Enemy extends Updateable {
         this.x += this.xVel;
         this.y += this.yVel;
         this.sprite.position.set(this.x, this.y, 0);
+
+        if (this.health <= 0) {
+            this.isAlive = false;
+        }
     }
 
     render(): void {
