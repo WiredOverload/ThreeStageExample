@@ -207,8 +207,11 @@ window.addEventListener("keyup", e => {
         if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
             player.left = false;
         }
-        if (e.keyCode === 32 /* space bar */ || e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
+        if (e.keyCode === 32 /* space bar */) {
             player.isShooting = false;
+        }
+        if (e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
+            player.up = false;
         }
     }
 });
