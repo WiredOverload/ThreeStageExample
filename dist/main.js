@@ -48219,9 +48219,8 @@ exports.Enemy = Enemy;
  * Game Plan:
  * Rogue Legacy, Now With Bees (TM)
  * A bunch of bees dressed up as a man
- * platformer inside a mansion(?)
- *  No idea why he's there or what his end goal is
- * originally hiding himself as a man to fit in with society, which uses bees as currency
+ * platformer inside a mansion
+ * hiding himself as a man to fit in with society, which uses bees as currency
  * loses bee mass as he gets hit due to losing bees
  * loses bee mass as he uses Bee Abilities (TM)
  * leaves the queen when the swarm disperses
@@ -48235,27 +48234,22 @@ exports.Enemy = Enemy;
  * player movement + properties
  * projectiles
  * enemies
- *  melee + ranged?
- *  settled on wasps + exterminators? what about society?
+ *  melee + ranged
+ *  NPCs
+ * NPC Text?
  * platforms and environment
- *  mansion just for platform stage?
- *  possibly trying to escape a city?
- *  too many bees flew in through windows and banded together to escape?
  * art
- *  player, multiple sprites or dynamic
  *  platforms
- *  projectiles
- *  enemies
  *  backgrounds
  *  other stage screens
  * sound
  *  music
  *  bee sounds? we need it but it could sound traumatizing
- * different playyer attacks
+ * different player attacks
  *  keep it simple by just spawning bee projectiles at first
  *  upgrades could make bees homing, bounce, be reobtainable...
  * Score, time or number of times died
- * NPCs that attack you if it's too obvious you are bees?
+ * NPCs that attack you if it's too obvious you are bees
  *
  * Feel free to add anything you want here and delete anything that's been completed
  */
@@ -48285,6 +48279,7 @@ stageList["splash"].update = function () {
     stageList["splash"].gameElements.forEach(function (el) { el.update(); });
 };
 //game screen logic
+stageList["main"].UIElements.push(new staticImage_1.StaticImage(stageList["main"].UIScene, 0, 0, "assets/space4096.png", new three_1.Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new staticImage_1.StaticImage(stageList["main"].BackgroundScene, 0, 4, "assets/backgroundFullDoubled.png", new three_1.Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new staticImage_1.StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new three_1.Vector3(16, 9, 1)));
 stageList["main"].gameElements.push(new player_1.Player(stageList["main"].gameScene, renderer));
@@ -48604,10 +48599,10 @@ var Stage = /** @class */ (function () {
     }
     Stage.prototype.render = function (renderer) {
         renderer.autoClear = true;
-        renderer.render(this.BackgroundScene, this.BackgroundCamera);
-        renderer.autoClear = false;
-        renderer.render(this.gameScene, this.gameCamera);
         renderer.render(this.UIScene, this.UICamera);
+        renderer.autoClear = false;
+        renderer.render(this.BackgroundScene, this.BackgroundCamera);
+        renderer.render(this.gameScene, this.gameCamera);
     };
     Stage.prototype.baseUpdate = function () {
         this.gameElements.forEach(function (element) {
