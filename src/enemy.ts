@@ -11,8 +11,9 @@ export class Enemy extends Updateable {
     sprite: Sprite;
     health:number;
     isAlive: boolean;
+    maxAnisotrophy: number;
 
-    constructor(scene: Scene, type: number, x, y, xVel, yVel) {
+    constructor(scene: Scene, type: number, maxAnisotrophy: number, x, y, xVel, yVel) {
         super();
         this.scene = scene;
         this.x = x;
@@ -21,6 +22,7 @@ export class Enemy extends Updateable {
         this.yVel = yVel;
         this.health = 100;
         this.isAlive = true;
+        this.maxAnisotrophy = maxAnisotrophy;
 
         var spriteMap: Texture;
 
@@ -41,7 +43,7 @@ export class Enemy extends Updateable {
             }
         }
         
-        spriteMap.anisotropy = 2;
+        spriteMap.anisotropy = maxAnisotrophy;
         var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
         spriteMaterial.map.minFilter = THREE.LinearFilter;
         this.sprite = new Sprite(spriteMaterial);

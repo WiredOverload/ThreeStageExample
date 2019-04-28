@@ -81,7 +81,7 @@ stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].Back
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 
 stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer.capabilities.getMaxAnisotropy()));
-stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, 1, 0, 0, 0));
+stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), 1, 0, 0, 0));
 
 stageList["main"].update = function () {//actual splash screen update logic here
     var localStage: Stage = stageList["main"];
@@ -90,12 +90,12 @@ stageList["main"].update = function () {//actual splash screen update logic here
             localStage.gameScene.remove(el.sprite);
         }
     });
-     // filter out dead enemies / player
-    localStage.gameElements = localStage.gameElements.filter(el => el.isAlive);
+    // filter out dead enemies
+    localStage.gameElements = localStage.gameElements.filter(el => el.isAlive || el instanceof Player);
 
     var localPlayer: Player = localStage.gameElements.find(el => el instanceof Player);
     localStage.gameElements.forEach(el => { el.update() });
-    localStage.gameCamera.position.set(localPlayer.x, localStage.gameCamera.position.y, localStage.gameCamera.position.z);
+    localStage.gameCamera.position.set(localPlayer ? localPlayer.x : localStage.gameCamera.position.x, localStage.gameCamera.position.y, localStage.gameCamera.position.z);
 
     var isBackgroundLeft: boolean = false, isBackgroundRight: boolean = false;
     localStage.BackgroundElements.forEach(element => {
@@ -120,7 +120,7 @@ stageList["main"].update = function () {//actual splash screen update logic here
             if (el !== el2) { // only check for collision between two different objects
                 if (collision(el, el2)) {
                     // if player collides with an enemy projectile, take damage   
-                    if (el instanceof Player && el2 instanceof Projectile && (el2.type === 2 || el2.type === 3)) {
+                    if (el instanceof Player && el.isAlive && el2 instanceof Projectile && (el2.type === 2 || el2.type === 3)) {
                         el.takeHit();
                         el2.isAlive = false;
                         console.log('player collided with enemy projectile');
@@ -132,9 +132,15 @@ stageList["main"].update = function () {//actual splash screen update logic here
                         console.log('enemy collided with player projectile');
                     }
                     // if player collides with enemy, give player period of invuln and push back
-                    if (el instanceof Player && el2 instanceof Enemy) {
+                    if (el instanceof Player && el.isAlive && el2 instanceof Enemy) {
                         el.takeHit();
                         console.log('player collided with enemy');
+                    }
+                    // if player collides with queen, increment player's queen count
+                    if (el instanceof Player && el.isAlive && el2 instanceof Projectile && el2.type === 4) {
+                        el.queenCount++;
+                        el2.isAlive = false;
+                        console.log('picked up queen');
                     }
                 }
             }
@@ -184,32 +190,33 @@ window.addEventListener("resize", e => {
 window.addEventListener("keydown", e => {
     if (currentStage == "main") {
         const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
-
-        if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-            player.right = true;
-        }
-        if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
-            player.left = true;
-        }
-        if (e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
-            player.up = true;
-        }
-        if (e.keyCode === 32 /* space bar */) {
-            // shoot projectiles
-            if (!player.isShooting) {
-                player.health -= 2;
-                stageList["main"].gameElements.push(
-                    new Projectile(
-                        stageList["main"].gameScene, 
-                        player.x, 
-                        player.y, 
-                        player.xVel >= 0 ? 0.01 + player.xVel : -0.01 + player.xVel,
-                        0,
-                        0
-                    )
-                );
+        if (player.isAlive) {
+            if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
+                player.right = true;
             }
-            player.isShooting = true;
+            if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
+                player.left = true;
+            }
+            if (e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
+                player.up = true;
+            }
+            if (e.keyCode === 32 /* space bar */) {
+                // shoot projectiles
+                if (!player.isShooting) {
+                    player.health -= 2;
+                    stageList["main"].gameElements.push(
+                        new Projectile(
+                            stageList["main"].gameScene,
+                            player.x,
+                            player.y,
+                            player.xVel >= 0 ? 0.01 + player.xVel : -0.01 + player.xVel,
+                            0,
+                            0
+                        )
+                    );
+                }
+                player.isShooting = true;
+            }
         }
     }
 });
@@ -218,17 +225,53 @@ window.addEventListener("keydown", e => {
 window.addEventListener("keyup", e => {
     if (currentStage == "main") {
         const player = stageList["main"].gameElements.find(el => el instanceof Player);
-        if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-            player.right = false;
+        if (player.isAlive) {
+            if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
+                player.right = false;
+            }
+            if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
+                player.left = false;
+            }
+            if (e.keyCode === 32 /* space bar */) {
+                player.isShooting = false;
+            }
+            if (e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
+                player.up = false;
+            }
         }
-        if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
-            player.left = false;
-        }
-        if (e.keyCode === 32 /* space bar */) {
-            player.isShooting = false;
-        }
-        if (e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
-            player.up = false;
-        }
+    }
+});
+
+window.addEventListener("click", e => {
+    const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
+    if (!player.isAlive) {
+        //span queen at player's corpse
+        stageList["main"].gameElements.push(
+            new Projectile(
+                stageList["main"].gameScene,
+                player.x,
+                0,
+                0,
+                0,
+                4
+            )
+        );
+        // respawn player to starting position
+        player.x = 0;
+        player.y = 0;
+        player.xVel = 0;
+        player.yVel = 0;
+        player.up = false;
+        player.left = false;
+        player.right = false;
+        player.isJumping = false;
+        player.isAlive = true;
+        player.isInvuln = false;
+        player.isShooting = false;
+        player.isLookingRight = true;
+        player.health = 100;
+
+        stageList["main"].gameScene.add(player.sprite);
+        console.log("respawned");
     }
 });
