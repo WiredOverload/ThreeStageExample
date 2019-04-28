@@ -57,7 +57,7 @@ export class Player extends Updateable {
         } else if (this.health < 50) {
             spriteMap = this.beemanIdleStateHurt2;
         }
-        
+
         spriteMap.anisotropy = this.maxAnisotrophy;
         var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
         spriteMaterial.map.minFilter = THREE.LinearFilter;
@@ -104,6 +104,18 @@ export class Player extends Updateable {
                 spriteMap = this.beemanShootingStateHurt2;
             }
 
+            spriteMap.anisotropy = this.maxAnisotrophy;
+            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+            spriteMaterial.map.minFilter = THREE.LinearFilter;
+            this.sprite.material = spriteMaterial;
+        } else {
+            var spriteMap: Texture = this.beemanIdleState;
+
+            if (this.health < 75) {
+                spriteMap = this.beemanIdleStateHurt1;
+            } else if (this.health < 50) {
+                spriteMap = this.beemanIdleStateHurt2;
+            }
             spriteMap.anisotropy = this.maxAnisotrophy;
             var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
             spriteMaterial.map.minFilter = THREE.LinearFilter;

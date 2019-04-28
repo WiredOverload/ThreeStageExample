@@ -59,6 +59,11 @@ export class Projectile extends Updateable {
 
     update() {
         this.totalTicks++;
+
+        if (this.totalTicks >= this.lifetimeTicks) {
+            this.isAlive = false;
+        }
+
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         if (this.type == 2) {
@@ -68,6 +73,7 @@ export class Projectile extends Updateable {
         else if (this.type == 1) {
             //add homing bee logic here
         }
+        
         this.sprite.position.set(this.x, this.y, 0);
     }
 }

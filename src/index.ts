@@ -79,11 +79,20 @@ stageList["main"].UIElements.push(new StaticImage(stageList["main"].UIScene, 0, 
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 0, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 
-stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer.getMaxAnisotropy()));
+stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer.capabilities.getMaxAnisotropy()));
+stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, 1, 0, 0, 0));
 
 stageList["main"].update = function () {//actual splash screen update logic here
-    var localStage = stageList["main"];
-    var localPlayer = localStage.gameElements.find(el => el instanceof Player);
+    var localStage: Stage = stageList["main"];
+    localStage.gameElements.forEach(el => {
+        if (!el.isAlive) {
+            localStage.gameScene.remove(el.sprite);
+        }
+    });
+     // filter out dead enemies / player
+    localStage.gameElements = localStage.gameElements.filter(el => el.isAlive);
+
+    var localPlayer: Player = localStage.gameElements.find(el => el instanceof Player);
     localStage.gameElements.forEach(el => { el.update() });
     localStage.gameCamera.position.set(localPlayer.x, localStage.gameCamera.position.y, localStage.gameCamera.position.z);
 
@@ -110,18 +119,21 @@ stageList["main"].update = function () {//actual splash screen update logic here
             if (el !== el2) { // only check for collision between two different objects
                 if (collision(el, el2)) {
                     // if player collides with an enemy projectile, take damage   
-                    if (el instanceof Player && el2 instanceof Projectile && el2.type in [2, 3]) {
+                    if (el instanceof Player && el2 instanceof Projectile && (el2.type === 2 || el2.type === 3)) {
                         el.takeHit();
                         el2.isAlive = false;
+                        console.log('player collided with enemy projectile');
                     }
-                    // if enemy collides with enemy projectile, enemy takes damage
-                    if (el instanceof Enemy && el2 instanceof Projectile && el2.type in [0, 1]) {
+                    // if enemy collides with player projectile, enemy takes damage
+                    if (el instanceof Enemy && el2 instanceof Projectile && (el2.type === 0 || el2.type === 1)) {
                         el.health -= 10;
                         el2.isAlive = false;
+                        console.log('enemy collided with player projectile');
                     }
                     // if player collides with enemy, give player period of invuln and push back
                     if (el instanceof Player && el2 instanceof Enemy) {
                         el.takeHit();
+                        console.log('player collided with enemy');
                     }
                 }
             }
@@ -135,7 +147,6 @@ var interval = setInterval(update, 1000 / 60);//60 ticks per second
 function update() {
     stageList[currentStage].baseUpdate();
     stageList[currentStage].update();
-    //stageList["main"].gameElements.filter(el => el.isAlive); // filter out dead enemies / player
 }
 
 // check if two items are colliding
@@ -186,8 +197,8 @@ window.addEventListener("keydown", e => {
                         stageList["main"].gameScene, 
                         player.x, 
                         player.y, 
-                        player.xVel > 0 ? 0.01 : -0.01,
-                        player.yVel > 0 ? 0.01 : -0.01, 
+                        player.xVel >= 0 ? 0.01 : -0.01,
+                        0,
                         0
                     )
                 );

@@ -12,13 +12,13 @@ export class Enemy extends Updateable {
     health:number;
     isAlive: boolean;
 
-    constructor(scene: Scene, type: number) {
+    constructor(scene: Scene, type: number, x, y, xVel, yVel) {
         super();
         this.scene = scene;
-        this.x = 0;
-        this.y = 0;
-        this.xVel = 0;
-        this.yVel = 0;
+        this.x = x;
+        this.y = y;
+        this.xVel = xVel;
+        this.yVel = yVel;
         this.health = 100;
         this.isAlive = true;
 
