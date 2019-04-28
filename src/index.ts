@@ -198,7 +198,7 @@ window.addEventListener("keydown", e => {
                         stageList["main"].gameScene, 
                         player.x, 
                         player.y, 
-                        player.xVel >= 0 ? 0.01 : -0.01,
+                        player.xVel >= 0 ? 0.01 + player.xVel : -0.01 + player.xVel,
                         0,
                         0
                     )
