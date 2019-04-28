@@ -29,10 +29,12 @@ export class Enemy extends Updateable {
             case 0: {//wasp
                 this.health = 50;
                 spriteMap = new THREE.TextureLoader().load("assets/wasp1.png");
+                break;
             }
             case 1: {//exterminator
                 this.health = 100;
                 spriteMap = new THREE.TextureLoader().load("assets/exterminator.png");
+                break;
             }
             case 2: {//NPCs?
 

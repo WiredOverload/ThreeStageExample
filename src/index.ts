@@ -192,6 +192,7 @@ window.addEventListener("keydown", e => {
         if (e.keyCode === 32 /* space bar */) {
             // shoot projectiles
             if (!player.isShooting) {
+                player.health -= 2;
                 stageList["main"].gameElements.push(
                     new Projectile(
                         stageList["main"].gameScene, 

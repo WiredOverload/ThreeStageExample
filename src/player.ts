@@ -25,6 +25,7 @@ export class Player extends Updateable {
     beemanShootingState: Texture;
     beemanShootingStateHurt1: Texture;
     beemanShootingStateHurt2: Texture;
+    invulnTicks: number;
 
     constructor(scene: Scene, maxAnisotrophy: number) {
         super();
@@ -43,12 +44,13 @@ export class Player extends Updateable {
         this.isInvuln = false;
         this.isShooting = false;
         this.maxAnisotrophy = maxAnisotrophy;
-        this.beemanIdleState = new THREE.TextureLoader().load("assets/beeman_idle1.png")
-        this.beemanIdleStateHurt1 = new THREE.TextureLoader().load("assets/beeman_idle2.png")
-        this.beemanIdleStateHurt2 = new THREE.TextureLoader().load("assets/beeman_idle3.png")
-        this.beemanShootingState = new THREE.TextureLoader().load("assets/beeman1.png")
-        this.beemanShootingStateHurt1 = new THREE.TextureLoader().load("assets/beeman2.png")
-        this.beemanShootingStateHurt2 = new THREE.TextureLoader().load("assets/beeman3.png")
+        this.beemanIdleState = new THREE.TextureLoader().load("assets/beeman_idle1.png");
+        this.beemanIdleStateHurt1 = new THREE.TextureLoader().load("assets/beeman_idle2.png");
+        this.beemanIdleStateHurt2 = new THREE.TextureLoader().load("assets/beeman_idle3.png");
+        this.beemanShootingState = new THREE.TextureLoader().load("assets/beeman1.png");
+        this.beemanShootingStateHurt1 = new THREE.TextureLoader().load("assets/beeman2.png");
+        this.beemanShootingStateHurt2 = new THREE.TextureLoader().load("assets/beeman3.png");
+        this.invulnTicks = 0;
 
         var spriteMap: Texture = this.beemanIdleState;
 
@@ -62,11 +64,20 @@ export class Player extends Updateable {
         var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
         spriteMaterial.map.minFilter = THREE.LinearFilter;
         this.sprite = new Sprite(spriteMaterial);
-        this.sprite.scale.set(31/81, 1, 1);
+        this.sprite.scale.set(31 / 81, 1, 1);
         this.scene.add(this.sprite);
     }
 
     update(): void {
+        if (this.isInvuln) {
+            this.invulnTicks++;
+        }
+        // 3 second invuln
+        if (this.invulnTicks >= 180) {
+            this.isInvuln = false;
+            this.invulnTicks = 0;
+        }
+        
         if (this.right) {
             this.xVel = Math.min(this.xVel += 0.01, this.maxVel);
         }
@@ -77,6 +88,7 @@ export class Player extends Updateable {
             this.yVel += this.isJumping ? 0.009 : 0.3;
             this.isJumping = true;
         }
+
         this.yVel -= 0.01;
         this.x += this.xVel;
         this.y += this.yVel;
@@ -99,31 +111,32 @@ export class Player extends Updateable {
             var spriteMap: Texture = this.beemanShootingState;
             this.sprite.scale.set(45 / 81, 1, 1);
 
-            if (this.health < 75) {
-                spriteMap = this.beemanShootingStateHurt1;
-                this.sprite.scale.set(44/73, 1, 1);
-            } else if (this.health < 50) {
+            if (this.health < 50) {
                 spriteMap = this.beemanShootingStateHurt2;
-                this.sprite.scale.set(50/54, 1, 1);
+                this.sprite.scale.set(50 / 54, 1, 1);
+            } else if (this.health < 75) {
+                spriteMap = this.beemanShootingStateHurt1;
+                this.sprite.scale.set(44 / 73, 1, 1);
             }
 
             spriteMap.anisotropy = this.maxAnisotrophy;
-            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000 : 0xffffff });
             spriteMaterial.map.minFilter = THREE.LinearFilter;
             this.sprite.material = spriteMaterial;
         } else {
             var spriteMap: Texture = this.beemanIdleState;
-            this.sprite.scale.set(31/81, 1, 1);
+            this.sprite.scale.set(31 / 81, 1, 1);
 
-            if (this.health < 75) {
-                spriteMap = this.beemanIdleStateHurt1;
-                this.sprite.scale.set(27/73, 1, 1);
-            } else if (this.health < 50) {
+            if (this.health < 50) {
                 spriteMap = this.beemanIdleStateHurt2;
-                this.sprite.scale.set(35/54, 1, 1);
+                this.sprite.scale.set(35 / 54, 1, 1);
+                
+            } else if (this.health < 75) {
+                spriteMap = this.beemanIdleStateHurt1;
+                this.sprite.scale.set(27 / 73, 1, 1);
             }
             spriteMap.anisotropy = this.maxAnisotrophy;
-            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+            var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: this.isInvuln && this.invulnTicks % 5 ? 0xff0000 : 0xffffff });
             spriteMaterial.map.minFilter = THREE.LinearFilter;
             this.sprite.material = spriteMaterial;
         }
