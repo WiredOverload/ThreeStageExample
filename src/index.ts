@@ -105,15 +105,15 @@ window.addEventListener("resize", e => {
 /* movement controls for the player */
 window.addEventListener("keydown", e => {
     const player = stageList["splash"].gameElements.find(el => el instanceof Player);
-    const maxVel = 0.05;
 
     if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-        player.xVel = Math.min(player.xVel += 0.01, maxVel);
-        player.xVel *= 0.97;
+        player.right = true;
     }
     if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
-        player.xVel = Math.max(player.xVel -= 0.01, -maxVel);
-        player.xVel *= 0.97;
+        player.left = true;
+    }
+    if (e.keyCode === 32 /* space bar */ || e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
+        player.up = true;
     }
 });
 
@@ -121,9 +121,12 @@ window.addEventListener("keydown", e => {
 window.addEventListener("keyup", e => {
     const player = stageList["splash"].gameElements.find(el => el instanceof Player);
     if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-        player.xVel = 0;
+        player.right = false;
     }
     if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */) {
-        player.xVel = 0;
+        player.left = false;
+    }
+    if (e.keyCode === 32 /* space bar */ || e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */) {
+        player.up = false;
     }
 });
