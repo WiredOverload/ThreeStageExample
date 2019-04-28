@@ -14,6 +14,7 @@ export class Platform extends Updateable{
         var spriteMap:TextureLoader = new THREE.TextureLoader().load("woodPlatform1.png");
         var spriteMaterial:SpriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
         this.sprite = new Sprite( spriteMaterial );
+        this.sprite.scale.set(2, 1/8, 1);
         scene.add(this.sprite);
     }
 

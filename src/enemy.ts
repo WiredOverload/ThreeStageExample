@@ -2,7 +2,7 @@ import { Sprite, TextureLoader, SpriteMaterial, Scene, Texture, Vector3 } from "
 import { Updateable } from "./stage";
 var THREE = require('three');
 
-export class Player extends Updateable {
+export class Enemy extends Updateable {
     scene: Scene;
     x: number;
     y: number;
@@ -11,7 +11,7 @@ export class Player extends Updateable {
     sprite: Sprite;
     health:number;
 
-    constructor(scene: Scene) {
+    constructor(scene: Scene, type: number) {
         super();
         this.scene = scene;
         this.x = 0;
@@ -20,7 +20,23 @@ export class Player extends Updateable {
         this.yVel = 0;
         this.health = 100;
 
-        var spriteMap: Texture = new THREE.TextureLoader().load("assets/beeman1.png");//"BoundingBox.png"
+        var spriteMap: Texture;
+
+        switch(type)
+        {
+            case 0: {//wasp
+                this.health = 50;
+                spriteMap = new THREE.TextureLoader().load("assets/wasp1.png");
+            }
+            case 1: {//exterminator
+                this.health = 100;
+                spriteMap = new THREE.TextureLoader().load("assets/exterminator.png");
+            }
+            case 2: {//NPCs?
+
+            }
+        }
+        
         spriteMap.anisotropy = 2;
         var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
         spriteMaterial.map.minFilter = THREE.LinearFilter;
