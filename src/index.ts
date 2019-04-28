@@ -71,13 +71,21 @@ stageList["main"] = new Stage();
 
 stageList["splash"] = new Stage();
 currentStage = "splash";
-// stageList["splash"].UIElements.push(new StaticImage(stageList["splash"].UIScene, 0, 0, "assets/BoundingBox.png"));
+
+
+//splash screen logic
+stageList["splash"].gameElements.push(new Player(stageList["splash"].gameScene));
 
 stageList["splash"].update = function () {//actual splash screen update logic here
     stageList["splash"].gameElements.forEach(el => { el.update() });
 }
 
-stageList["splash"].gameElements.push(new Player(stageList["splash"].gameScene));
+
+//game screen logic
+stageList["main"].update = function () {//actual splash screen update logic here
+    stageList["main"].gameElements.forEach(el => { el.update() });
+}
+
 
 var interval = setInterval(update, 1000 / 60);//60 ticks per second
 

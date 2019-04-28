@@ -48203,11 +48203,15 @@ var currentStage = "main";
 stageList["main"] = new stage_1.Stage();
 stageList["splash"] = new stage_1.Stage();
 currentStage = "splash";
-// stageList["splash"].UIElements.push(new StaticImage(stageList["splash"].UIScene, 0, 0, "assets/BoundingBox.png"));
+//splash screen logic
+stageList["splash"].gameElements.push(new player_1.Player(stageList["splash"].gameScene));
 stageList["splash"].update = function () {
     stageList["splash"].gameElements.forEach(function (el) { el.update(); });
 };
-stageList["splash"].gameElements.push(new player_1.Player(stageList["splash"].gameScene));
+//game screen logic
+stageList["main"].update = function () {
+    stageList["main"].gameElements.forEach(function (el) { el.update(); });
+};
 var interval = setInterval(update, 1000 / 60); //60 ticks per second
 function update() {
     stageList[currentStage].baseUpdate();
@@ -48392,7 +48396,7 @@ var Stage = /** @class */ (function () {
         this.UIElements.forEach(function (element) {
             element.update();
         });
-        this.BackgroundCamera.position = this.gameCamera.position;
+        this.BackgroundCamera.position.set(this.gameCamera.position.x, this.gameCamera.position.y, this.gameCamera.position.z);
     };
     Stage.prototype.update = function () {
         //this should be left empty for each instance to define themselves
