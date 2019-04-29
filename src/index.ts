@@ -65,9 +65,9 @@ let stageList: { [key: string]: Stage; } = {};//dictionary of all stages
 var currentStage: string = "main";
 
 stageList["main"] = new Stage();
-
 stageList["splash"] = new Stage();
 
+var ticks:number = 0;
 
 //splash screen logic
 stageList["splash"].update = function () {//actual splash screen update logic here
@@ -81,9 +81,6 @@ stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].Back
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 
 //add platforms before player
-// stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 0, 4.5));
-// stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 2));
-// stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 4));
 for(var i = 0; i < 16; i++) {
     stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 2, 1));
     stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 2, 6));
@@ -98,7 +95,7 @@ for(var i = 0; i < 16; i++) {
 stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer.capabilities.getMaxAnisotropy()));
 
 //enemies
-stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), 1, 0, 0, 0));
+//stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), 1, 0, 0, 0));
 
 //game screen logic
 stageList["main"].update = function () {//actual splash screen update logic here
@@ -180,12 +177,18 @@ stageList["main"].update = function () {//actual splash screen update logic here
             }
         });
     });
+
+    //enemy spawning
+    if(ticks % 60 == 0) {
+        stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), localPlayer.x + 18, localPlayer.y, -0.1, 0));
+    }
 }
 
 
 //main update
 var interval = setInterval(update, 1000 / 60);//60 ticks per second
 function update() {
+    ticks++;
     stageList[currentStage].baseUpdate();
     stageList[currentStage].update();
 }
