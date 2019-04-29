@@ -41,13 +41,14 @@
  * Feel free to add anything you want here and delete anything that's been completed
  */
 
-import { Scene, PerspectiveCamera, WebGLRenderer, MinEquation, Vector3, Sprite } from "three";
+import { Scene, PerspectiveCamera, WebGLRenderer, MinEquation, Vector3, Sprite, Texture, SpriteMaterial } from "three";
 import { Stage } from "./stage";
 import { StaticImage } from "./staticImage";
 import { Player } from "./player";
 import { Projectile } from "./projectile";
 import { Enemy } from "./enemy";
 import { Platform } from "./platform";
+import THREE = require("three");
 
 var renderer: WebGLRenderer = new WebGLRenderer();
 //renderer.setSize(window.innerWidth, window.innerHeight);//1:1 scale resolution
@@ -105,10 +106,18 @@ stageList["main"].update = function () {//actual splash screen update logic here
             localStage.gameScene.remove(el.sprite);
         }
     });
+
+    var localPlayer: Player = localStage.gameElements.find(el => el instanceof Player);
+
     // filter out dead enemies
     localStage.gameElements = localStage.gameElements.filter(el => el.isAlive || el instanceof Player || el.isAlive == undefined);
 
-    var localPlayer: Player = localStage.gameElements.find(el => el instanceof Player);
+    localStage.gameElements.forEach(element => {
+        if(element.isAlive != undefined && element.x < localPlayer.x - 16) {
+            element.isAlive = false;
+        }
+    });
+
     localStage.gameElements.forEach(el => { el.update() });
     localStage.gameCamera.position.set(localPlayer ? localPlayer.x : localStage.gameCamera.position.x, localStage.gameCamera.position.y, localStage.gameCamera.position.z);
 
@@ -181,6 +190,17 @@ stageList["main"].update = function () {//actual splash screen update logic here
     //enemy spawning
     if(ticks % 60 == 0) {
         stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), localPlayer.x + 18, localPlayer.y, -0.1, 0));
+    }
+    if(ticks % 240 == 0) {
+        var enemy:Enemy = new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), localPlayer.x - 15.5, localPlayer.y, 0.1, 0);
+        var spriteMap:Texture = new THREE.TextureLoader().load("assets/wasp1.png");
+        spriteMap.repeat.set(-1, 1);
+        spriteMap.offset.set( 1, 0);
+        spriteMap.anisotropy = renderer.getMaxAnisotropy();
+        var spriteMaterial:SpriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
+        spriteMaterial.map.minFilter = THREE.LinearFilter;
+        enemy.sprite.material = spriteMaterial;
+        stageList["main"].gameElements.push(enemy);
     }
 }
 
