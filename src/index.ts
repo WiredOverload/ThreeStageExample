@@ -63,22 +63,28 @@ document.body.getElementsByClassName('centered-canvas')[0].appendChild(renderer.
 
 let stageList: { [key: string]: Stage; } = {};//dictionary of all stages
 var currentStage: string = "main";
+var win = false;
 
 stageList["main"] = new Stage();
 
 stageList["splash"] = new Stage();
 
+stageList["gameOver"] = new Stage();
+
+stageList["gameOver"].update = function () {
+    stageList["gameOver"].gameElements.forEach(el => { el.update() });
+}
 
 //splash screen logic
 stageList["splash"].update = function () {//actual splash screen update logic here
     stageList["splash"].gameElements.forEach(el => { el.update() });
 }
 
-
 //backgrounds
 stageList["main"].UIElements.push(new StaticImage(stageList["main"].UIScene, 0, 0, "assets/space4096.png", new Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 0, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
+stageList["gameOver"].UIElements.push(new StaticImage(stageList["gameOver"].UIScene, 0, 0, "assets/gameOver.png", new Vector3(16, 9, 1)));
 
 //add platforms before player
 // stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 0, 4.5));
@@ -180,6 +186,12 @@ stageList["main"].update = function () {//actual splash screen update logic here
             }
         });
     });
+
+    // game win logic
+    if (localPlayer.x >= 4) {
+        win = true;
+        currentStage="gameOver";
+    }
 }
 
 
@@ -272,6 +284,27 @@ window.addEventListener("keyup", e => {
     }
 });
 
+
+var respawn = function () {
+     // respawn player to starting position
+     const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
+     if (player){
+        player.x = -4;
+        player.y = 0;
+        player.xVel = 0;
+        player.yVel = 0;
+        player.up = false;
+        player.left = false;
+        player.right = false;
+        player.isJumping = false;
+        player.isAlive = true;
+        player.isInvuln = false;
+        player.isShooting = false;
+        player.isLookingRight = true;
+        player.health = 100;
+     }
+}
+
 window.addEventListener("click", e => {
     const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
     if (!player.isAlive) {
@@ -286,22 +319,15 @@ window.addEventListener("click", e => {
                 4
             )
         );
-        // respawn player to starting position
-        player.x = 0;
-        player.y = 0;
-        player.xVel = 0;
-        player.yVel = 0;
-        player.up = false;
-        player.left = false;
-        player.right = false;
-        player.isJumping = false;
-        player.isAlive = true;
-        player.isInvuln = false;
-        player.isShooting = false;
-        player.isLookingRight = true;
-        player.health = 100;
-
+       
+        respawn();
         stageList["main"].gameScene.add(player.sprite);
         console.log("respawned");
+    }
+
+    if (win) {
+        currentStage="main";
+        win = false;
+        respawn();
     }
 });

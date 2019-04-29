@@ -33,7 +33,7 @@ export class Player extends Updateable {
     constructor(scene: Scene, maxAnisotrophy: number) {
         super();
         this.scene = scene;
-        this.x = 0.075;
+        this.x = -4;
         this.y = 0;
         this.xVel = 0;
         this.yVel = 0;
@@ -98,7 +98,7 @@ export class Player extends Updateable {
             this.isJumping = true;
         }
 
-        this.x += this.xVel;
+        this.x += this.x < -4 && this.xVel < 0 ? 0 : this.xVel;
         this.y += this.yVel;
         this.xVel *= 0.9;
         this.yVel *= 0.9;
