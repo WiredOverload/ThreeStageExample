@@ -161,7 +161,7 @@ stageList["main"].update = function () {//actual splash screen update logic here
                     }
                     // if enemy collides with player projectile, enemy takes damage
                     if (el instanceof Enemy && el2 instanceof Projectile && (el2.type === 0 || el2.type === 1)) {
-                        el.health -= 10;
+                        el.health -= 25;
                         el2.isAlive = false;
                         console.log('enemy collided with player projectile');
                     }
@@ -268,14 +268,34 @@ window.addEventListener("keydown", e => {
             if (e.keyCode === 32 /* space bar */) {
                 // shoot projectiles
                 if (!player.isShooting) {
-                    player.health -= 2;
+                    player.health -= 4;
                     stageList["main"].gameElements.push(
                         new Projectile(
                             stageList["main"].gameScene,
                             player.x,
                             player.y,
-                            player.xVel >= 0 ? 0.01 + player.xVel : -0.01 + player.xVel,
+                            player.xVel >= 0 ? 0.05 + player.xVel : -0.01 + player.xVel,
                             0,
+                            0
+                        )
+                    );
+                    stageList["main"].gameElements.push(
+                        new Projectile(
+                            stageList["main"].gameScene,
+                            player.x,
+                            player.y,
+                            player.xVel >= 0 ? 0.05 + player.xVel : -0.01 + player.xVel,
+                            0.01,
+                            0
+                        )
+                    );
+                    stageList["main"].gameElements.push(
+                        new Projectile(
+                            stageList["main"].gameScene,
+                            player.x,
+                            player.y,
+                            player.xVel >= 0 ? 0.05 + player.xVel : -0.01 + player.xVel,
+                            -0.01,
                             0
                         )
                     );
