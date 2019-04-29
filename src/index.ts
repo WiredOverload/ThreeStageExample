@@ -173,6 +173,7 @@ stageList["main"].update = function () {//actual splash screen update logic here
                     // if player collides with queen, increment player's queen count
                     if (el instanceof Player && el.isAlive && el2 instanceof Projectile && el2.type === 4) {
                         el.queenCount++;
+                        el.health += 50;
                         el2.isAlive = false;
                         console.log('picked up queen');
                     }
