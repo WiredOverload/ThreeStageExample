@@ -41,7 +41,7 @@
  * Feel free to add anything you want here and delete anything that's been completed
  */
 
-import { Scene, PerspectiveCamera, WebGLRenderer, MinEquation, Vector3 } from "three";
+import { Scene, PerspectiveCamera, WebGLRenderer, MinEquation, Vector3, Sprite } from "three";
 import { Stage } from "./stage";
 import { StaticImage } from "./staticImage";
 import { Player } from "./player";
@@ -75,14 +75,22 @@ stageList["splash"].update = function () {//actual splash screen update logic he
 }
 
 
-//game screen logic
+//backgrounds
 stageList["main"].UIElements.push(new StaticImage(stageList["main"].UIScene, 0, 0, "assets/space4096.png", new Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 0, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 
+//add platforms before player
+stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 0, 4.5));
+stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 2));
+stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 4));
+
 stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer.capabilities.getMaxAnisotropy()));
+
+//enemies
 stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), 1, 0, 0, 0));
 
+//game screen logic
 stageList["main"].update = function () {//actual splash screen update logic here
     var localStage: Stage = stageList["main"];
     localStage.gameElements.forEach(el => {
@@ -91,12 +99,13 @@ stageList["main"].update = function () {//actual splash screen update logic here
         }
     });
     // filter out dead enemies
-    localStage.gameElements = localStage.gameElements.filter(el => el.isAlive || el instanceof Player);
+    localStage.gameElements = localStage.gameElements.filter(el => el.isAlive || el instanceof Player || el.isAlive == undefined);
 
     var localPlayer: Player = localStage.gameElements.find(el => el instanceof Player);
     localStage.gameElements.forEach(el => { el.update() });
     localStage.gameCamera.position.set(localPlayer ? localPlayer.x : localStage.gameCamera.position.x, localStage.gameCamera.position.y, localStage.gameCamera.position.z);
 
+    //background logic
     var isBackgroundLeft: boolean = false, isBackgroundRight: boolean = false;
     localStage.BackgroundElements.forEach(element => {
         if (element.x < localPlayer.x && element.x > localPlayer.x - 16) {
@@ -115,6 +124,9 @@ stageList["main"].update = function () {//actual splash screen update logic here
     if (!isBackgroundRight) {
         stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, (Math.round(localPlayer.x / 16) * 16) + 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
     }
+    
+    //collision logic
+    localPlayer.isOnGround = false;
     stageList["main"].gameElements.forEach(el => {
         stageList["main"].gameElements.forEach(el2 => {
             if (el !== el2) { // only check for collision between two different objects
@@ -142,16 +154,24 @@ stageList["main"].update = function () {//actual splash screen update logic here
                         el2.isAlive = false;
                         console.log('picked up queen');
                     }
+                    //player colliding with platform
+                    if (el instanceof Player && el2 instanceof Platform) {
+                        if(el.x - (el.sprite.scale.x / 2) < el2.x + (el2.sprite.scale.x / 2) &&
+                            el.x + (el.sprite.scale.x / 2) > el2.x - (el2.sprite.scale.x / 2) &&
+                            el.y - (el.sprite.scale.y / 2) < el2.y + (el2.sprite.scale.y / 2) &&
+                            el.y - (el.sprite.scale.y / 2) + .1 > el2.y - (el2.sprite.scale.y / 2)) {
+                            el.isOnGround = true;
+                            el.yVel = Math.max(0, el.yVel);
+                            console.log('player collided with platform');
+                        }
+                        
+                    }
                 }
             }
         });
     });
 }
 
-//platforms
-stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 0, 4.5));
-stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 2));
-stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 4));
 
 //main update
 var interval = setInterval(update, 1000 / 60);//60 ticks per second
@@ -162,12 +182,12 @@ function update() {
 
 // check if two items are colliding
 function collision(a, b) {
-    return !(
-        ((a.y + a.sprite.scale.y) < (b.y)) ||
-        (a.y > (b.y + b.sprite.scale.y)) ||
-        ((a.x + a.sprite.scale.x) < b.x) ||
-        (a.x > (b.x + b.sprite.scale.x))
-    );
+    return (
+        a.x - (a.sprite.scale.x / 2) < b.x + (b.sprite.scale.x / 2) &&
+        a.x + (a.sprite.scale.x / 2) > b.x - (b.sprite.scale.x / 2) &&
+        a.y - (a.sprite.scale.y / 2) < b.y + (b.sprite.scale.y / 2) &&
+        a.y + (a.sprite.scale.y / 2) > b.y - (b.sprite.scale.y / 2)
+    )
 }
 
 var animate = function () {

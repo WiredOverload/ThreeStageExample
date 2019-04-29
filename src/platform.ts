@@ -1,4 +1,4 @@
-import { Sprite, Scene, TextureLoader, SpriteMaterial} from "three";
+import { Sprite, Scene, TextureLoader, SpriteMaterial, Texture} from "three";
 import { Updateable } from "./stage";
 var THREE = require('three');//only needed due to three type shenanigans
 
@@ -11,7 +11,9 @@ export class Platform extends Updateable{
         super();//needed?
         this.x = x;
         this.y = y;
-        var spriteMap:TextureLoader = new THREE.TextureLoader().load("assets/woodPlatform1.png");
+        var spriteMap:Texture = new THREE.TextureLoader().load("assets/woodPlatform1.png");
+        spriteMap.minFilter = THREE.NearestFilter;
+        spriteMap.magFilter = THREE.NearestFilter;
         var spriteMaterial:SpriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
         this.sprite = new Sprite( spriteMaterial );
         this.sprite.scale.set(2, 1/8, 1);
@@ -24,6 +26,6 @@ export class Platform extends Updateable{
     }
 
     update() {
-        //this.sprite.position.set(this.x, this.y, 0);
+        this.sprite.position.set(this.x, this.y, 0);
     }
 }

@@ -13,6 +13,7 @@ export class Player extends Updateable {
     left: boolean;
     right: boolean;
     isJumping: boolean;
+    isOnGround: boolean;
     maxVel: number;
     health: number;
     isAlive: boolean;
@@ -40,6 +41,7 @@ export class Player extends Updateable {
         this.left = false;
         this.right = false;
         this.isJumping = false;
+        this.isOnGround = true;
         this.maxVel = 0.05;
         this.health = 100;
         this.isAlive = true;
@@ -90,10 +92,12 @@ export class Player extends Updateable {
         }
         if (this.up) {
             this.yVel += this.isJumping ? 0.009 : 0.3;
+            if(!this.isJumping) {
+                this.isOnGround = false;
+            }
             this.isJumping = true;
         }
 
-        this.yVel -= 0.01;
         this.x += this.xVel;
         this.y += this.yVel;
         this.xVel *= 0.9;
@@ -102,8 +106,15 @@ export class Player extends Updateable {
         //floor logic
         if (this.y < 0.075) {
             this.isJumping = false;
+            this.isOnGround = true;
             this.y = 0.075
             this.yVel = 0;
+        }
+        else if(this.isOnGround) {
+            this.isJumping = false;
+        }
+        else {
+            this.yVel -= 0.01;
         }
 
         this.sprite.position.set(this.x, this.y, 0);
