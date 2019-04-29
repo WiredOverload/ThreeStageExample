@@ -81,9 +81,19 @@ stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].Back
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 
 //add platforms before player
-stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 0, 4.5));
-stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 2));
-stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 4));
+// stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 0, 4.5));
+// stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 2));
+// stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, 4, 4));
+for(var i = 0; i < 16; i++) {
+    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 2, 1));
+    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 2, 6));
+    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 6, 2));
+    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 6, 4));
+    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 10, 2));
+    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 10, 4));
+    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 14, 1));
+    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 14, 6));
+}
 
 stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer.capabilities.getMaxAnisotropy()));
 
