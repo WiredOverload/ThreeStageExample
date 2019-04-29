@@ -194,7 +194,7 @@ stageList["main"].update = function () {//actual splash screen update logic here
     });
 
     // game win logic
-    if (localPlayer.x >= 4) {
+    if (localPlayer.x >= 240) {
         win = true;
         currentStage="gameOver";
     }
