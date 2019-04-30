@@ -48279,11 +48279,11 @@ document.body.getElementsByClassName('centered-canvas')[0].appendChild(renderer.
 var stageList = {}; //dictionary of all stages
 var currentStage = "splash";
 var win = false;
-var music = new Audio('assets/sfx/beeswax.mp3');
+var music = new Audio('assets/SFX/beeswax.mp3');
 music.loop = true;
-var shootClip = new Audio('assets/sfx/bee_buzz_edit.wav');
-var hitClip = new Audio('assets/sfx/wasp_sting.wav');
-var hitTargetClip = new Audio('assets/sfx/bee_man_get_hit2.wav');
+var shootClip = new Audio('assets/SFX/bee_buzz_edit.wav');
+var hitClip = new Audio('assets/SFX/wasp_sting.wav');
+var hitTargetClip = new Audio('assets/SFX/bee_man_get_hit2.wav');
 hitClip.volume = 0.8;
 var ticks = 0;
 stageList["main"] = new stage_1.Stage();
