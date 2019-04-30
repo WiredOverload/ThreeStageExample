@@ -98,8 +98,8 @@ export class Player extends Updateable {
             this.isJumping = true;
         }
 
-        this.x += this.x < -4 && this.xVel < 0 ? 0 : this.xVel;
-        this.y += this.yVel;
+        this.x += !this.isAlive || (this.x < -4 && this.xVel < 0) ? 0 : this.xVel;
+        this.y += this.isAlive ? this.yVel: 0;
         this.xVel *= 0.9;
         this.yVel *= 0.9;
 
@@ -118,6 +118,7 @@ export class Player extends Updateable {
         }
 
         this.sprite.position.set(this.x, this.y, 0);
+        
 
         if (this.health <= 0) {
             this.isAlive = false;
