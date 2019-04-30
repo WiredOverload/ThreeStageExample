@@ -49,7 +49,7 @@ export class Projectile extends Updateable {
             }
             case 4: { //queen bee
                 spriteMap = new THREE.TextureLoader().load("assets/queenbee.png");
-                var scaleX = 45/50;
+                var scaleX = 9/10;
                 var scaleY = 1;
                 var scaleZ = 1;
                 break;
