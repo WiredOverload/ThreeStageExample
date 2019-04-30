@@ -297,6 +297,8 @@ window.addEventListener("resize", e => {
 
 /* movement controls for the player */
 window.addEventListener("keydown", e => {
+    e.preventDefault();
+    e.stopPropagation();
     if(music.played != null) {
         music.play();
     }
