@@ -66,7 +66,7 @@ document.body.getElementsByClassName('centered-canvas')[0].appendChild(renderer.
 let stageList: { [key: string]: Stage; } = {};//dictionary of all stages
 var currentStage: string = "splash";
 var win = false;
-var music = new Audio('assets/SFX/beeswax.mp3');
+var music = new Audio('assets/SFX/Beeswax.mp3');
 music.loop = true;
 var shootClip = new Audio('assets/SFX/bee_buzz_edit.wav');
 var hitClip = new Audio('assets/SFX/wasp_sting.wav');
