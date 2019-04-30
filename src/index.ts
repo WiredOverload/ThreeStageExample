@@ -157,25 +157,38 @@ stageList["main"].update = function () {//actual splash screen update logic here
                     if (el instanceof Player && el.isAlive && el2 instanceof Projectile && (el2.type === 2 || el2.type === 3)) {
                         el.takeHit();
                         el2.isAlive = false;
-                        console.log('player collided with enemy projectile');
+                        //console.log('player collided with enemy projectile');
                     }
                     // if enemy collides with player projectile, enemy takes damage
                     if (el instanceof Enemy && el2 instanceof Projectile && (el2.type === 0 || el2.type === 1)) {
-                        el.health -= 25;
-                        el2.isAlive = false;
-                        console.log('enemy collided with player projectile');
+                        if(el.health > 0) {
+                            el.health -= 25;
+                            el2.isAlive = false;
+                        }
+                        //console.log('enemy collided with player projectile');
                     }
                     // if player collides with enemy, give player period of invuln and push back
                     if (el instanceof Player && el.isAlive && el2 instanceof Enemy) {
                         el.takeHit();
-                        console.log('player collided with enemy');
+                        for(var i = 0; i < Math.PI * 2; i += Math.PI / 4)
+                        stageList["main"].gameElements.push(
+                            new Projectile(
+                                stageList["main"].gameScene,
+                                localPlayer.x,
+                                localPlayer.y,
+                                localPlayer.xVel + (Math.cos(i) * .05),
+                                localPlayer.yVel + (Math.sin(i) * .05),
+                                0
+                            )
+                        );
+                        //console.log('player collided with enemy');
                     }
                     // if player collides with queen, increment player's queen count
                     if (el instanceof Player && el.isAlive && el2 instanceof Projectile && el2.type === 4) {
                         el.queenCount++;
                         el.health += 50;
                         el2.isAlive = false;
-                        console.log('picked up queen');
+                        //console.log('picked up queen');
                     }
                     //player colliding with platform
                     if (el instanceof Player && el2 instanceof Platform) {
@@ -185,7 +198,7 @@ stageList["main"].update = function () {//actual splash screen update logic here
                             el.y - (el.sprite.scale.y / 2) + .1 > el2.y - (el2.sprite.scale.y / 2)) {
                             el.isOnGround = true;
                             el.yVel = Math.max(0, el.yVel);
-                            console.log('player collided with platform');
+                            //console.log('player collided with platform');
                         }
                         
                     }
@@ -274,7 +287,7 @@ window.addEventListener("keydown", e => {
                             stageList["main"].gameScene,
                             player.x,
                             player.y,
-                            player.xVel >= 0 ? 0.05 + player.xVel : -0.01 + player.xVel,
+                            player.xVel >= 0 ? 0.05 + player.xVel : -0.05 + player.xVel,
                             0,
                             0
                         )
@@ -284,8 +297,8 @@ window.addEventListener("keydown", e => {
                             stageList["main"].gameScene,
                             player.x,
                             player.y,
-                            player.xVel >= 0 ? 0.05 + player.xVel : -0.01 + player.xVel,
-                            0.01,
+                            player.xVel >= 0 ? 0.05 + player.xVel : -0.05 + player.xVel,
+                            0.0075,
                             0
                         )
                     );
@@ -294,8 +307,8 @@ window.addEventListener("keydown", e => {
                             stageList["main"].gameScene,
                             player.x,
                             player.y,
-                            player.xVel >= 0 ? 0.05 + player.xVel : -0.01 + player.xVel,
-                            -0.01,
+                            player.xVel >= 0 ? 0.05 + player.xVel : -0.05 + player.xVel,
+                            -0.0075,
                             0
                         )
                     );
