@@ -110,6 +110,7 @@ stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, rend
 //enemies
 //stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), 1, 0, 0, 0));
 
+//game over sprite
 var gameOver = new THREE.TextureLoader().load("assets/gameOver.png");
 var spriteMap: Texture = gameOver;
 spriteMap.anisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -117,6 +118,15 @@ var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, 
 spriteMaterial.map.minFilter = THREE.LinearFilter;
 var gameOverSprite = new Sprite(spriteMaterial);
 gameOverSprite.scale.set(12, 9, 1);
+// arrow sprite
+var arrow = new THREE.TextureLoader().load("assets/arrow.png");
+var arrowSpriteMap: Texture = arrow;
+arrowSpriteMap.anisotropy = renderer.capabilities.getMaxAnisotropy();
+var arrowSpriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: arrowSpriteMap, color: 0xffffff });
+arrowSpriteMaterial.map.minFilter = THREE.LinearFilter;
+var arrowSprite = new Sprite(arrowSpriteMaterial);
+arrowSprite.position.set(0, 3, 0);
+stageList["main"].gameScene.add(arrowSprite);
 
 //game screen logic
 stageList["main"].update = function () {//actual splash screen update logic here
