@@ -85,7 +85,7 @@ stageList["splash"].update = function () {//actual splash screen update logic he
 stageList["main"].UIElements.push(new StaticImage(stageList["main"].UIScene, 0, 0, "assets/space4096.png", new Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 0, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
-stageList["gameOver"].UIElements.push(new StaticImage(stageList["gameOver"].UIScene, 0, 0, "assets/gameOver.png", new Vector3(16, 9, 1)));
+stageList["gameOver"].UIElements.push(new StaticImage(stageList["gameOver"].UIScene, 0, 0, "assets/winScreen.png", new Vector3(16, 9, 1)));
 
 //add platforms before player
 for(var i = 0; i < 16; i++) {
@@ -100,9 +100,16 @@ for(var i = 0; i < 16; i++) {
 }
 
 stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer.capabilities.getMaxAnisotropy()));
-
 //enemies
 //stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), 1, 0, 0, 0));
+
+var gameOver = new THREE.TextureLoader().load("assets/gameOver.png");
+var spriteMap: Texture = gameOver;
+spriteMap.anisotropy = renderer.capabilities.getMaxAnisotropy();
+var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
+spriteMaterial.map.minFilter = THREE.LinearFilter;
+var gameOverSprite = new Sprite(spriteMaterial);
+gameOverSprite.scale.set(12, 9, 1);
 
 //game screen logic
 stageList["main"].update = function () {//actual splash screen update logic here
@@ -114,7 +121,11 @@ stageList["main"].update = function () {//actual splash screen update logic here
     });
 
     var localPlayer: Player = localStage.gameElements.find(el => el instanceof Player);
-
+    if (!localPlayer.isAlive) {
+        gameOverSprite.position.x = localPlayer.x;
+        gameOverSprite.position.y = 4;
+        localStage.gameScene.add(gameOverSprite);
+    }
     // filter out dead enemies
     localStage.gameElements = localStage.gameElements.filter(el => el.isAlive || el instanceof Player || el.isAlive == undefined);
 
@@ -331,7 +342,7 @@ var respawn = function () {
 window.addEventListener("click", e => {
     const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
     if (!player.isAlive) {
-        //span queen at player's corpse
+        //spawn queen at player's corpse
         stageList["main"].gameElements.push(
             new Projectile(
                 stageList["main"].gameScene,
@@ -346,6 +357,8 @@ window.addEventListener("click", e => {
         respawn();
         stageList["main"].gameScene.add(player.sprite);
         console.log("respawned");
+        // remove game over indicator
+        stageList["main"].gameScene.remove(gameOverSprite);
     }
 
     if (win) {
