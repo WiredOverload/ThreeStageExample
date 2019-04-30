@@ -396,7 +396,7 @@ var respawn = function () {
     }
 }
 
-window.addEventListener("click", e => {
+window.addEventListener("click", e => { 
     if(currentStage == "splash") {
         currentStage = "main"
     }
