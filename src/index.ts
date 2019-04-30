@@ -74,7 +74,7 @@ stageList["gameOver"] = new Stage();
 stageList["gameOver"].update = function () {
     stageList["gameOver"].gameElements.forEach(el => { el.update() });
 }
-var ticks:number = 0;
+var ticks: number = 0;
 
 //splash screen logic
 stageList["splash"].update = function () {//actual splash screen update logic here
@@ -88,7 +88,7 @@ stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].Back
 stageList["gameOver"].UIElements.push(new StaticImage(stageList["gameOver"].UIScene, 0, 0, "assets/winScreen.png", new Vector3(16, 9, 1)));
 
 //add platforms before player
-for(var i = 0; i < 16; i++) {
+for (var i = 0; i < 16; i++) {
     stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 2, 1));
     stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 2, 6));
     stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 6, 2));
@@ -130,7 +130,7 @@ stageList["main"].update = function () {//actual splash screen update logic here
     localStage.gameElements = localStage.gameElements.filter(el => el.isAlive || el instanceof Player || el.isAlive == undefined);
 
     localStage.gameElements.forEach(element => {
-        if(element.isAlive != undefined && element.x < localPlayer.x - 16) {
+        if (element.isAlive != undefined && element.x < localPlayer.x - 16) {
             element.isAlive = false;
         }
     });
@@ -157,7 +157,7 @@ stageList["main"].update = function () {//actual splash screen update logic here
     if (!isBackgroundRight) {
         stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, (Math.round(localPlayer.x / 16) * 16) + 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
     }
-    
+
     //collision logic
     localPlayer.isOnGround = false;
     stageList["main"].gameElements.forEach(el => {
@@ -172,7 +172,7 @@ stageList["main"].update = function () {//actual splash screen update logic here
                     }
                     // if enemy collides with player projectile, enemy takes damage
                     if (el instanceof Enemy && el2 instanceof Projectile && (el2.type === 0 || el2.type === 1)) {
-                        if(el.health > 0) {
+                        if (el.health > 0) {
                             el.health -= 25;
                             el2.isAlive = false;
                         }
@@ -180,38 +180,41 @@ stageList["main"].update = function () {//actual splash screen update logic here
                     }
                     // if player collides with enemy, give player period of invuln and push back
                     if (el instanceof Player && el.isAlive && el2 instanceof Enemy) {
+                        var beeAmount = el.health <= 10 && el.health > 0 ? 8 : 4;
                         el.takeHit();
-                        for(var i = 0; i < Math.PI * 2; i += Math.PI / 4)
-                        stageList["main"].gameElements.push(
-                            new Projectile(
-                                stageList["main"].gameScene,
-                                localPlayer.x,
-                                localPlayer.y,
-                                localPlayer.xVel + (Math.cos(i) * .05),
-                                localPlayer.yVel + (Math.sin(i) * .05),
-                                0
-                            )
-                        );
-                        //console.log('player collided with enemy');
-                    }
-                    // if player collides with queen, increment player's queen count
-                    if (el instanceof Player && el.isAlive && el2 instanceof Projectile && el2.type === 4) {
-                        el.queenCount++;
-                        el.health += 50;
-                        el2.isAlive = false;
-                        //console.log('picked up queen');
-                    }
-                    //player colliding with platform
-                    if (el instanceof Player && el2 instanceof Platform) {
-                        if(el.x - (el.sprite.scale.x / 2) < el2.x + (el2.sprite.scale.x / 2) &&
-                            el.x + (el.sprite.scale.x / 2) > el2.x - (el2.sprite.scale.x / 2) &&
-                            el.y - (el.sprite.scale.y / 2) < el2.y + (el2.sprite.scale.y / 2) &&
-                            el.y - (el.sprite.scale.y / 2) + .1 > el2.y - (el2.sprite.scale.y / 2)) {
-                            el.isOnGround = true;
-                            el.yVel = Math.max(0, el.yVel);
-                            //console.log('player collided with platform');
+
+                        for (var i = 0; i < Math.PI * 2; i += Math.PI / beeAmount) {
+                            stageList["main"].gameElements.push(
+                                new Projectile(
+                                    stageList["main"].gameScene,
+                                    localPlayer.x,
+                                    localPlayer.y,
+                                    localPlayer.xVel + (Math.cos(i) * .05),
+                                    localPlayer.yVel + (Math.sin(i) * .05),
+                                    0
+                                )
+                            );
                         }
-                        
+                    }
+
+                    //console.log('player collided with enemy');
+                }
+                // if player collides with queen, increment player's queen count
+                if (el instanceof Player && el.isAlive && el2 instanceof Projectile && el2.type === 4) {
+                    el.queenCount++;
+                    el.health += 50;
+                    el2.isAlive = false;
+                    //console.log('picked up queen');
+                }
+                //player colliding with platform
+                if (el instanceof Player && el2 instanceof Platform) {
+                    if (el.x - (el.sprite.scale.x / 2) < el2.x + (el2.sprite.scale.x / 2) &&
+                        el.x + (el.sprite.scale.x / 2) > el2.x - (el2.sprite.scale.x / 2) &&
+                        el.y - (el.sprite.scale.y / 2) < el2.y + (el2.sprite.scale.y / 2) &&
+                        el.y - (el.sprite.scale.y / 2) + .1 > el2.y - (el2.sprite.scale.y / 2)) {
+                        el.isOnGround = true;
+                        el.yVel = Math.max(0, el.yVel);
+                        //console.log('player collided with platform');
                     }
                 }
             }
@@ -221,19 +224,19 @@ stageList["main"].update = function () {//actual splash screen update logic here
     // game win logic
     if (localPlayer.x >= 240) {
         win = true;
-        currentStage="gameOver";
+        currentStage = "gameOver";
     }
     //enemy spawning
-    if(ticks % 60 == 0) {
+    if (ticks % 60 == 0) {
         stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), localPlayer.x + 18, localPlayer.y, -0.1, 0));
     }
-    if(ticks % 240 == 0) {
-        var enemy:Enemy = new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), localPlayer.x - 15.5, localPlayer.y, 0.1, 0);
-        var spriteMap:Texture = new THREE.TextureLoader().load("assets/wasp1.png");
+    if (ticks % 240 == 0) {
+        var enemy: Enemy = new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), localPlayer.x - 15.5, localPlayer.y, 0.1, 0);
+        var spriteMap: Texture = new THREE.TextureLoader().load("assets/wasp1.png");
         spriteMap.repeat.set(-1, 1);
-        spriteMap.offset.set( 1, 0);
+        spriteMap.offset.set(1, 0);
         spriteMap.anisotropy = renderer.getMaxAnisotropy();
-        var spriteMaterial:SpriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
+        var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
         spriteMaterial.map.minFilter = THREE.LinearFilter;
         enemy.sprite.material = spriteMaterial;
         stageList["main"].gameElements.push(enemy);
@@ -353,9 +356,9 @@ window.addEventListener("keyup", e => {
 
 
 var respawn = function () {
-     // respawn player to starting position
-     const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
-     if (player){
+    // respawn player to starting position
+    const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
+    if (player) {
         player.x = -4;
         player.y = 0;
         player.xVel = 0;
@@ -369,7 +372,7 @@ var respawn = function () {
         player.isShooting = false;
         player.isLookingRight = true;
         player.health = 100;
-     }
+    }
 }
 
 window.addEventListener("click", e => {
@@ -386,7 +389,7 @@ window.addEventListener("click", e => {
                 4
             )
         );
-       
+
         respawn();
         stageList["main"].gameScene.add(player.sprite);
         console.log("respawned");
@@ -395,7 +398,7 @@ window.addEventListener("click", e => {
     }
 
     if (win) {
-        currentStage="main";
+        currentStage = "main";
         win = false;
         respawn();
     }
