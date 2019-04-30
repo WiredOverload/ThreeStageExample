@@ -62,9 +62,17 @@ else {
 //document.getElementById("canvasContainer").append(renderer.domElement);
 document.body.getElementsByClassName('centered-canvas')[0].appendChild(renderer.domElement);//boardhouse uses a captured canvas element, difference?
 
+//globals
 let stageList: { [key: string]: Stage; } = {};//dictionary of all stages
 var currentStage: string = "main";
 var win = false;
+var music = new Audio('assets/sfx/beeswax.mp3');
+music.loop = true;
+var shootClip = new Audio('assets/sfx/bee_buzz_edit.wav');
+var hitClip = new Audio('assets/sfx/wasp_sting.wav');
+var hitTargetClip = new Audio('assets/sfx/bee_man_get_hit2.wav');
+hitClip.volume = 0.8;
+var ticks:number = 0;
 
 stageList["main"] = new Stage();
 stageList["splash"] = new Stage();
@@ -74,7 +82,6 @@ stageList["gameOver"] = new Stage();
 stageList["gameOver"].update = function () {
     stageList["gameOver"].gameElements.forEach(el => { el.update() });
 }
-var ticks:number = 0;
 
 //splash screen logic
 stageList["splash"].update = function () {//actual splash screen update logic here
@@ -157,15 +164,14 @@ stageList["main"].update = function () {//actual splash screen update logic here
                     if (el instanceof Player && el.isAlive && el2 instanceof Projectile && (el2.type === 2 || el2.type === 3)) {
                         el.takeHit();
                         el2.isAlive = false;
-                        //console.log('player collided with enemy projectile');
                     }
                     // if enemy collides with player projectile, enemy takes damage
                     if (el instanceof Enemy && el2 instanceof Projectile && (el2.type === 0 || el2.type === 1)) {
                         if(el.health > 0) {
                             el.health -= 25;
                             el2.isAlive = false;
+                            hitTargetClip.play();
                         }
-                        //console.log('enemy collided with player projectile');
                     }
                     // if player collides with enemy, give player period of invuln and push back
                     if (el instanceof Player && el.isAlive && el2 instanceof Enemy) {
@@ -181,14 +187,13 @@ stageList["main"].update = function () {//actual splash screen update logic here
                                 0
                             )
                         );
-                        //console.log('player collided with enemy');
+                        hitClip.play();
                     }
                     // if player collides with queen, increment player's queen count
                     if (el instanceof Player && el.isAlive && el2 instanceof Projectile && el2.type === 4) {
                         el.queenCount++;
                         el.health += 50;
                         el2.isAlive = false;
-                        //console.log('picked up queen');
                     }
                     //player colliding with platform
                     if (el instanceof Player && el2 instanceof Platform) {
@@ -198,7 +203,6 @@ stageList["main"].update = function () {//actual splash screen update logic here
                             el.y - (el.sprite.scale.y / 2) + .1 > el2.y - (el2.sprite.scale.y / 2)) {
                             el.isOnGround = true;
                             el.yVel = Math.max(0, el.yVel);
-                            //console.log('player collided with platform');
                         }
                         
                     }
@@ -266,6 +270,9 @@ window.addEventListener("resize", e => {
 
 /* movement controls for the player */
 window.addEventListener("keydown", e => {
+    if(music.played != null) {
+        music.play();
+    }
     if (currentStage == "main") {
         const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
         if (player.isAlive) {
@@ -312,6 +319,7 @@ window.addEventListener("keydown", e => {
                             0
                         )
                     );
+                    shootClip.play();
                 }
                 player.isShooting = true;
             }
