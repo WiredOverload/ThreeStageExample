@@ -213,25 +213,23 @@ stageList["main"].update = function () {//actual splash screen update logic here
                         }
                         hitClip.play();
                     }
-
-                    //console.log('player collided with enemy');
-                }
-                // if player collides with queen, increment player's queen count
-                if (el instanceof Player && el.isAlive && el2 instanceof Projectile && el2.type === 4) {
-                    el.queenCount++;
-                    el.health += 50;
-                    el2.isAlive = false;
-                    //console.log('picked up queen');
-                }
-                //player colliding with platform
-                if (el instanceof Player && el2 instanceof Platform) {
-                    if (el.x - (el.sprite.scale.x / 2) < el2.x + (el2.sprite.scale.x / 2) &&
-                        el.x + (el.sprite.scale.x / 2) > el2.x - (el2.sprite.scale.x / 2) &&
-                        el.y - (el.sprite.scale.y / 2) < el2.y + (el2.sprite.scale.y / 2) &&
-                        el.y - (el.sprite.scale.y / 2) + .1 > el2.y - (el2.sprite.scale.y / 2)) {
-                        el.isOnGround = true;
-                        el.yVel = Math.max(0, el.yVel);
-                        //console.log('player collided with platform');
+                    // if player collides with queen, increment player's queen count
+                    if (el instanceof Player && el.isAlive && el2 instanceof Projectile && el2.type === 4) {
+                        el.queenCount++;
+                        el.health += 50;
+                        el2.isAlive = false;
+                        console.log('picked up queen');
+                    }
+                    //player colliding with platform
+                    if (el instanceof Player && el2 instanceof Platform) {
+                        if (el.x - (el.sprite.scale.x / 2) < el2.x + (el2.sprite.scale.x / 2) &&
+                            el.x + (el.sprite.scale.x / 2) > el2.x - (el2.sprite.scale.x / 2) &&
+                            el.y - (el.sprite.scale.y / 2) < el2.y + (el2.sprite.scale.y / 2) &&
+                            el.y - (el.sprite.scale.y / 2) + .1 > el2.y - (el2.sprite.scale.y / 2)) {
+                            el.isOnGround = true;
+                            el.yVel = Math.max(0, el.yVel);
+                            //console.log('player collided with platform');
+                        }
                     }
                 }
             }
