@@ -64,7 +64,7 @@ document.body.getElementsByClassName('centered-canvas')[0].appendChild(renderer.
 
 //globals
 let stageList: { [key: string]: Stage; } = {};//dictionary of all stages
-var currentStage: string = "main";
+var currentStage: string = "splash";
 var win = false;
 var music = new Audio('assets/sfx/beeswax.mp3');
 music.loop = true;
@@ -76,7 +76,6 @@ var ticks:number = 0;
 
 stageList["main"] = new Stage();
 stageList["splash"] = new Stage();
-
 stageList["gameOver"] = new Stage();
 
 stageList["gameOver"].update = function () {
@@ -93,6 +92,7 @@ stageList["main"].UIElements.push(new StaticImage(stageList["main"].UIScene, 0, 
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 0, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
 stageList["gameOver"].UIElements.push(new StaticImage(stageList["gameOver"].UIScene, 0, 0, "assets/winScreen.png", new Vector3(16, 9, 1)));
+stageList["splash"].UIElements.push(new StaticImage(stageList["splash"].UIScene, 0, 0, "assets/splashscreen.png", new Vector3(16, 9, 1)));
 
 //add platforms before player
 for (var i = 0; i < 16; i++) {
@@ -387,30 +387,35 @@ var respawn = function () {
 }
 
 window.addEventListener("click", e => {
-    const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
-    if (!player.isAlive) {
-        //spawn queen at player's corpse
-        stageList["main"].gameElements.push(
-            new Projectile(
-                stageList["main"].gameScene,
-                player.x,
-                0,
-                0,
-                0,
-                4
-            )
-        );
-
-        respawn();
-        stageList["main"].gameScene.add(player.sprite);
-        console.log("respawned");
-        // remove game over indicator
-        stageList["main"].gameScene.remove(gameOverSprite);
+    if(currentStage == "splash") {
+        currentStage = "main"
     }
+    else {
+        const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
+        if (!player.isAlive) {
+            //spawn queen at player's corpse
+            stageList["main"].gameElements.push(
+                new Projectile(
+                    stageList["main"].gameScene,
+                    player.x,
+                    0,
+                    0,
+                    0,
+                    4
+                )
+            );
 
-    if (win) {
-        currentStage = "main";
-        win = false;
-        respawn();
+            respawn();
+            stageList["main"].gameScene.add(player.sprite);
+            console.log("respawned");
+            // remove game over indicator
+            stageList["main"].gameScene.remove(gameOverSprite);
+        }
+
+        if (win) {
+            currentStage = "main";
+            win = false;
+            respawn();
+        }
     }
 });
