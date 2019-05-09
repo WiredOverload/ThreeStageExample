@@ -79,36 +79,36 @@ stageList["splash"] = new Stage();
 stageList["gameOver"] = new Stage();
 
 stageList["gameOver"].update = function () {
-    stageList["gameOver"].gameElements.forEach(el => { el.update() });
+    stageList["gameOver"].elementsList["game"].forEach(el => { el.update() });
 }
 
 //splash screen logic
 stageList["splash"].update = function () {//actual splash screen update logic here
-    stageList["splash"].gameElements.forEach(el => { el.update() });
+    stageList["splash"].elementsList["game"].forEach(el => { el.update() });
 }
 
 //backgrounds
-stageList["main"].UIElements.push(new StaticImage(stageList["main"].UIScene, 0, 0, "assets/space4096.png", new Vector3(16, 9, 1)));
-stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 0, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
-stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
-stageList["gameOver"].UIElements.push(new StaticImage(stageList["gameOver"].UIScene, 0, 0, "assets/winScreen.png", new Vector3(16, 9, 1)));
-stageList["splash"].UIElements.push(new StaticImage(stageList["splash"].UIScene, 0, 0, "assets/splashscreen.png", new Vector3(16, 9, 1)));
+stageList["main"].elementsList["ui"].push(new StaticImage(stageList["main"].sceneList["ui"], 0, 0, "assets/space4096.png", new Vector3(16, 9, 1)));
+stageList["main"].elementsList["background"].push(new StaticImage(stageList["main"].sceneList["background"], 0, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
+stageList["main"].elementsList["background"].push(new StaticImage(stageList["main"].sceneList["background"], 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
+stageList["gameOver"].elementsList["ui"].push(new StaticImage(stageList["gameOver"].sceneList["ui"], 0, 0, "assets/winScreen.png", new Vector3(16, 9, 1)));
+stageList["splash"].elementsList["ui"].push(new StaticImage(stageList["splash"].sceneList["ui"], 0, 0, "assets/splashscreen.png", new Vector3(16, 9, 1)));
 
 //add platforms before player
 for (var i = 0; i < 16; i++) {
-    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 2, 1));
-    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 2, 6));
-    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 6, 2));
-    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 6, 4));
-    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 10, 2));
-    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 10, 4));
-    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 14, 1));
-    stageList["main"].gameElements.push(new Platform(stageList["main"].gameScene, (i * 16) + 14, 6));
+    stageList["main"].elementsList["game"].push(new Platform(stageList["main"].sceneList["game"], (i * 16) + 2, 1));
+    stageList["main"].elementsList["game"].push(new Platform(stageList["main"].sceneList["game"], (i * 16) + 2, 6));
+    stageList["main"].elementsList["game"].push(new Platform(stageList["main"].sceneList["game"], (i * 16) + 6, 2));
+    stageList["main"].elementsList["game"].push(new Platform(stageList["main"].sceneList["game"], (i * 16) + 6, 4));
+    stageList["main"].elementsList["game"].push(new Platform(stageList["main"].sceneList["game"], (i * 16) + 10, 2));
+    stageList["main"].elementsList["game"].push(new Platform(stageList["main"].sceneList["game"], (i * 16) + 10, 4));
+    stageList["main"].elementsList["game"].push(new Platform(stageList["main"].sceneList["game"], (i * 16) + 14, 1));
+    stageList["main"].elementsList["game"].push(new Platform(stageList["main"].sceneList["game"], (i * 16) + 14, 6));
 }
 
-stageList["main"].gameElements.push(new Player(stageList["main"].gameScene, renderer.capabilities.getMaxAnisotropy()));
+stageList["main"].elementsList["game"].push(new Player(stageList["main"].sceneList["game"], renderer.capabilities.getMaxAnisotropy()));
 //enemies
-//stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), 1, 0, 0, 0));
+//stageList["main"].elementsList["game"].push(new Enemy(stageList["main"].sceneList["game"], 0, renderer.capabilities.getMaxAnisotropy(), 1, 0, 0, 0));
 
 //game over sprite
 var gameOver = new THREE.TextureLoader().load("assets/gameOver.png");
@@ -126,38 +126,38 @@ var arrowSpriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: arrowS
 arrowSpriteMaterial.map.minFilter = THREE.LinearFilter;
 var arrowSprite = new Sprite(arrowSpriteMaterial);
 arrowSprite.position.set(0, 3, 0);
-stageList["main"].gameScene.add(arrowSprite);
+stageList["main"].sceneList["game"].add(arrowSprite);
 
 //game screen logic
 stageList["main"].update = function () {//actual splash screen update logic here
     var localStage: Stage = stageList["main"];
-    localStage.gameElements.forEach(el => {
+    localStage.elementsList["game"].forEach(el => {
         if (el.isAlive != undefined && !el.isAlive) {
-            localStage.gameScene.remove(el.sprite);
+            localStage.sceneList["game"].remove(el.sprite);
         }
     });
 
-    var localPlayer: Player = localStage.gameElements.find(el => el instanceof Player);
+    var localPlayer: Player = localStage.elementsList["game"].find(el => el instanceof Player);
     if (!localPlayer.isAlive) {
         gameOverSprite.position.x = localPlayer.x;
         gameOverSprite.position.y = 4;
-        localStage.gameScene.add(gameOverSprite);
+        localStage.sceneList["game"].add(gameOverSprite);
     }
     // filter out dead enemies
-    localStage.gameElements = localStage.gameElements.filter(el => el.isAlive || el instanceof Player || el.isAlive == undefined);
+    localStage.elementsList["game"] = localStage.elementsList["game"].filter(el => el.isAlive || el instanceof Player || el.isAlive == undefined);
 
-    localStage.gameElements.forEach(element => {
+    localStage.elementsList["game"].forEach(element => {
         if (element.isAlive != undefined && element.x < localPlayer.x - 16) {
             element.isAlive = false;
         }
     });
 
-    localStage.gameElements.forEach(el => { el.update() });
-    localStage.gameCamera.position.set(localPlayer ? localPlayer.x : localStage.gameCamera.position.x, localStage.gameCamera.position.y, localStage.gameCamera.position.z);
+    localStage.elementsList["game"].forEach(el => { el.update() });
+    localStage.cameraList["game"].position.set(localPlayer ? localPlayer.x : localStage.cameraList["game"].position.x, localStage.cameraList["game"].position.y, localStage.cameraList["game"].position.z);
 
     //background logic
     var isBackgroundLeft: boolean = false, isBackgroundRight: boolean = false;
-    localStage.BackgroundElements.forEach(element => {
+    localStage.elementsList["background"].forEach(element => {
         if (element.x < localPlayer.x && element.x > localPlayer.x - 16) {
             isBackgroundLeft = true;
         }
@@ -165,20 +165,20 @@ stageList["main"].update = function () {//actual splash screen update logic here
             isBackgroundRight = true;
         }
         else {
-            localStage.BackgroundElements.splice(localStage.BackgroundElements.indexOf(element), 1);
+            localStage.elementsList["background"].splice(localStage.elementsList["background"].indexOf(element), 1);
         }
     });
     if (!isBackgroundLeft) {
-        stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, (Math.round(localPlayer.x / 16) * 16) - 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
+        stageList["main"].elementsList["background"].push(new StaticImage(stageList["main"].sceneList["background"], (Math.round(localPlayer.x / 16) * 16) - 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
     }
     if (!isBackgroundRight) {
-        stageList["main"].BackgroundElements.push(new StaticImage(stageList["main"].BackgroundScene, (Math.round(localPlayer.x / 16) * 16) + 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
+        stageList["main"].elementsList["background"].push(new StaticImage(stageList["main"].sceneList["background"], (Math.round(localPlayer.x / 16) * 16) + 16, 4, "assets/backgroundFullDoubled.png", new Vector3(16, 9, 1)));
     }
 
     //collision logic
     localPlayer.isOnGround = false;
-    stageList["main"].gameElements.forEach(el => {
-        stageList["main"].gameElements.forEach(el2 => {
+    stageList["main"].elementsList["game"].forEach(el => {
+        stageList["main"].elementsList["game"].forEach(el2 => {
             if (el !== el2) { // only check for collision between two different objects
                 if (collision(el, el2)) {
                     // if player collides with an enemy projectile, take damage   
@@ -200,9 +200,9 @@ stageList["main"].update = function () {//actual splash screen update logic here
                         el.takeHit();
 
                         for (var i = 0; i < Math.PI * 2; i += Math.PI / beeAmount) {
-                            stageList["main"].gameElements.push(
+                            stageList["main"].elementsList["game"].push(
                                 new Projectile(
-                                    stageList["main"].gameScene,
+                                    stageList["main"].sceneList["game"],
                                     localPlayer.x,
                                     localPlayer.y,
                                     localPlayer.xVel + (Math.cos(i) * .05),
@@ -243,10 +243,10 @@ stageList["main"].update = function () {//actual splash screen update logic here
     }
     //enemy spawning
     if (ticks % 60 == 0) {
-        stageList["main"].gameElements.push(new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), localPlayer.x + 18, localPlayer.y, -0.1, 0));
+        stageList["main"].elementsList["game"].push(new Enemy(stageList["main"].sceneList["game"], 0, renderer.capabilities.getMaxAnisotropy(), localPlayer.x + 18, localPlayer.y, -0.1, 0));
     }
     if (ticks % 240 == 0) {
-        var enemy: Enemy = new Enemy(stageList["main"].gameScene, 0, renderer.capabilities.getMaxAnisotropy(), localPlayer.x - 15.5, localPlayer.y, 0.1, 0);
+        var enemy: Enemy = new Enemy(stageList["main"].sceneList["game"], 0, renderer.capabilities.getMaxAnisotropy(), localPlayer.x - 15.5, localPlayer.y, 0.1, 0);
         var spriteMap: Texture = new THREE.TextureLoader().load("assets/wasp1.png");
         spriteMap.repeat.set(-1, 1);
         spriteMap.offset.set(1, 0);
@@ -254,7 +254,7 @@ stageList["main"].update = function () {//actual splash screen update logic here
         var spriteMaterial: SpriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
         spriteMaterial.map.minFilter = THREE.LinearFilter;
         enemy.sprite.material = spriteMaterial;
-        stageList["main"].gameElements.push(enemy);
+        stageList["main"].elementsList["game"].push(enemy);
     }
 }
 
@@ -301,7 +301,7 @@ window.addEventListener("keydown", e => {
         music.play();
     }
     if (currentStage == "main") {
-        const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
+        const player: Player = stageList["main"].elementsList["game"].find(el => el instanceof Player);
         if (player.isAlive) {
             if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
                 player.right = true;
@@ -316,9 +316,9 @@ window.addEventListener("keydown", e => {
                 // shoot projectiles
                 if (!player.isShooting) {
                     player.health -= 4;
-                    stageList["main"].gameElements.push(
+                    stageList["main"].elementsList["game"].push(
                         new Projectile(
-                            stageList["main"].gameScene,
+                            stageList["main"].sceneList["game"],
                             player.x,
                             player.y,
                             player.xVel >= 0 ? 0.05 + player.xVel : -0.05 + player.xVel,
@@ -326,9 +326,9 @@ window.addEventListener("keydown", e => {
                             0
                         )
                     );
-                    stageList["main"].gameElements.push(
+                    stageList["main"].elementsList["game"].push(
                         new Projectile(
-                            stageList["main"].gameScene,
+                            stageList["main"].sceneList["game"],
                             player.x,
                             player.y,
                             player.xVel >= 0 ? 0.05 + player.xVel : -0.05 + player.xVel,
@@ -336,9 +336,9 @@ window.addEventListener("keydown", e => {
                             0
                         )
                     );
-                    stageList["main"].gameElements.push(
+                    stageList["main"].elementsList["game"].push(
                         new Projectile(
-                            stageList["main"].gameScene,
+                            stageList["main"].sceneList["game"],
                             player.x,
                             player.y,
                             player.xVel >= 0 ? 0.05 + player.xVel : -0.05 + player.xVel,
@@ -357,7 +357,7 @@ window.addEventListener("keydown", e => {
 /* movement controls for the player */
 window.addEventListener("keyup", e => {
     if (currentStage == "main") {
-        const player = stageList["main"].gameElements.find(el => el instanceof Player);
+        const player = stageList["main"].elementsList["game"].find(el => el instanceof Player);
         if (player.isAlive) {
             if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
                 player.right = false;
@@ -378,7 +378,7 @@ window.addEventListener("keyup", e => {
 
 var respawn = function () {
     // respawn player to starting position
-    const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
+    const player: Player = stageList["main"].elementsList["game"].find(el => el instanceof Player);
     if (player) {
         player.x = -4;
         player.y = 0;
@@ -401,12 +401,12 @@ window.addEventListener("click", e => {
         currentStage = "main"
     }
     else {
-        const player: Player = stageList["main"].gameElements.find(el => el instanceof Player);
+        const player: Player = stageList["main"].elementsList["game"].find(el => el instanceof Player);
         if (!player.isAlive) {
             //spawn queen at player's corpse
-            stageList["main"].gameElements.push(
+            stageList["main"].elementsList["game"].push(
                 new Projectile(
-                    stageList["main"].gameScene,
+                    stageList["main"].sceneList["game"],
                     player.x,
                     0,
                     0,
@@ -416,10 +416,10 @@ window.addEventListener("click", e => {
             );
 
             respawn();
-            stageList["main"].gameScene.add(player.sprite);
+            stageList["main"].sceneList["game"].add(player.sprite);
             console.log("respawned");
             // remove game over indicator
-            stageList["main"].gameScene.remove(gameOverSprite);
+            stageList["main"].sceneList["game"].remove(gameOverSprite);
         }
 
         if (win) {

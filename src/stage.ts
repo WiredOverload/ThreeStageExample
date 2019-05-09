@@ -10,7 +10,10 @@ export abstract class Updateable {
 }
 
 export class Stage {
-    gameScene:Scene;
+    sceneList: { [key: string]: Scene; };
+    cameraList: { [key: string]: OrthographicCamera; };
+    elementsList: { [key: string]: any[]; };
+    /*gameScene:Scene;
     UIScene:Scene;//might possibly need second UI scene for background UI effects
     BackgroundScene:Scene;
     gameCamera:OrthographicCamera;
@@ -18,50 +21,50 @@ export class Stage {
     UIElements:Array<Updateable>;//create custom UI element object?
     BackgroundCamera:OrthographicCamera;
     BackgroundElements:any[];//create custom UI element object?
-    gameElements:any[];//list of all objects that should be called in the update method
+    gameElements:any[];//list of all objects that should be called in the update method*/
     height:number;
     width:number;
 
     constructor() {
-        this.gameScene = new Scene();
-        this.UIScene = new Scene();//orthographic vs perspective?
-        this.BackgroundScene = new Scene();
+        this.sceneList["game"] = new Scene();
+        this.sceneList["UI"] = new Scene();//orthographic vs perspective?
+        this.sceneList["background"] = new Scene();
         this.height = 9;
         this.width = 16;
         //this.camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);//endererSize.width / - 2, rendererSize.width / 2, rendererSize.height / 2, rendererSize.height / -2, -1000, 1000
-        this.gameCamera = new OrthographicCamera(this.width/-2, this.width/2, this.height - .5, -.5, -1000, 1000);
-        this.gameCamera.position.set(0, 0, 25);
-        this.gameCamera.lookAt(0, 0, 0);
+        this.cameraList["game"] = new OrthographicCamera(this.width/-2, this.width/2, this.height - .5, -.5, -1000, 1000);
+        this.cameraList["game"].position.set(0, 0, 25);
+        this.cameraList["game"].lookAt(0, 0, 0);
 
-        this.UICamera = new OrthographicCamera(this.width/-2, this.width/2, this.height/2, this.height/-2, -1000, 1000);
-        this.UICamera.position.set(0, 0, 25);
-        this.UICamera.lookAt(0, 0, 0);
+        this.cameraList["ui"] = new OrthographicCamera(this.width/-2, this.width/2, this.height/2, this.height/-2, -1000, 1000);
+        this.cameraList["ui"].position.set(0, 0, 25);
+        this.cameraList["ui"].lookAt(0, 0, 0);
 
-        this.BackgroundCamera = new OrthographicCamera(this.width/-2, this.width/2, this.height - .5, -.5, -1000, 1000);//make sure this is always the same as the gameCamera
-        this.BackgroundCamera.position.set(0, 0, 25);
-        this.BackgroundCamera.lookAt(0, 0, 0);
+        this.cameraList["background"] = new OrthographicCamera(this.width/-2, this.width/2, this.height - .5, -.5, -1000, 1000);//make sure this is always the same as the gameCamera
+        this.cameraList["background"].position.set(0, 0, 25);
+        this.cameraList["background"].lookAt(0, 0, 0);
 
-        this.UIElements = new Array<Updateable>();
-        this.BackgroundElements = [];
-        this.gameElements = [];
+        this.elementsList["ui"] = [];
+        this.elementsList["background"] = [];
+        this.elementsList["game"] = [];
     }
 
     render(renderer:WebGLRenderer) {
         renderer.autoClear = true;
-        renderer.render( this.UIScene, this.UICamera );
+        renderer.render( this.sceneList["ui"], this.cameraList["ui"] );
         renderer.autoClear = false;
-        renderer.render( this.BackgroundScene, this.BackgroundCamera );
-        renderer.render( this.gameScene, this.gameCamera );
+        renderer.render( this.sceneList["background"], this.cameraList["background"] );
+        renderer.render( this.sceneList["game"], this.cameraList["game"] );
     }
 
     baseUpdate() {
-        this.gameElements.forEach(element => {
+        this.elementsList["game"].forEach(element => {
             element.update();
         });
         //this.UIElements.forEach(element => {
         //    element.update();
         //});
-        this.BackgroundCamera.position.set(this.gameCamera.position.x, this.gameCamera.position.y, this.gameCamera.position.z);
+        this.cameraList["background"].position.set(this.cameraList["game"].position.x, this.cameraList["game"].position.y, this.cameraList["game"].position.z);
     }
 
     update() {
