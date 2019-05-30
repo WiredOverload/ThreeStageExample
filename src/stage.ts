@@ -26,12 +26,14 @@ export class Stage {
     width:number;
 
     constructor() {
+        this.sceneList = {};//this seems like a hack to initialize
         this.sceneList["game"] = new Scene();
-        this.sceneList["UI"] = new Scene();//orthographic vs perspective?
+        this.sceneList["ui"] = new Scene();//orthographic vs perspective?
         this.sceneList["background"] = new Scene();
         this.height = 9;
         this.width = 16;
         //this.camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);//endererSize.width / - 2, rendererSize.width / 2, rendererSize.height / 2, rendererSize.height / -2, -1000, 1000
+        this.cameraList = {};//this seems like a hack to initialize
         this.cameraList["game"] = new OrthographicCamera(this.width/-2, this.width/2, this.height - .5, -.5, -1000, 1000);
         this.cameraList["game"].position.set(0, 0, 25);
         this.cameraList["game"].lookAt(0, 0, 0);
@@ -44,6 +46,7 @@ export class Stage {
         this.cameraList["background"].position.set(0, 0, 25);
         this.cameraList["background"].lookAt(0, 0, 0);
 
+        this.elementsList = {};//this seems like a hack to initialize
         this.elementsList["ui"] = [];
         this.elementsList["background"] = [];
         this.elementsList["game"] = [];
