@@ -15,7 +15,8 @@
  * 
  * 
  * TODO For Game
- * Splash stage
+ * HIgher resolution splash stage
+ * Better win screen
  * lose stage
  * shop stage
  * player movement + properties
@@ -24,14 +25,17 @@
  *  melee + ranged
  *  NPCs
  * NPC Text?
- * platforms and environment
+ * randomized platforms and environment
  * art
  *  platforms
- *  backgrounds
+ *  more backgrounds
+ *   spawn room
+ *   goal background
+ *   shop background
  *  other stage screens
  * sound
- *  music
- *  bee sounds? we need it but it could sound traumatizing
+ *  more music
+ *  ambient bee sounds?
  * different player attacks
  *  keep it simple by just spawning bee projectiles at first
  *  upgrades could make bees homing, bounce, be reobtainable...
@@ -77,6 +81,7 @@ var ticks:number = 0;
 stageList["main"] = new Stage();
 stageList["splash"] = new Stage();
 stageList["gameOver"] = new Stage();
+stageList["shop"] = new Stage();
 
 stageList["gameOver"].update = function () {
     stageList["gameOver"].elementsList["game"].forEach(el => { el.update() });

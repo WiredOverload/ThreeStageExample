@@ -12,6 +12,7 @@ export class Enemy extends Updateable {
     health:number;
     isAlive: boolean;
     maxAnisotrophy: number;
+    type: number;
 
     constructor(scene: Scene, type: number, maxAnisotrophy: number, x, y, xVel, yVel) {
         super();
@@ -23,6 +24,7 @@ export class Enemy extends Updateable {
         this.health = 100;
         this.isAlive = true;
         this.maxAnisotrophy = maxAnisotrophy;
+        this.type = type;
 
         var spriteMap: Texture;
 
